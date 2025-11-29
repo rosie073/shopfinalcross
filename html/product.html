@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product | Chuchu</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- NAV BAR (same as other pages) -->
+  <header class="navbar">
+    <div class="logo">Chuchu</div>
+    <nav>
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a class="active" href="/html/shop.html">Shop</a></li>
+        <li><a href="/html/blog.html">Blog</a></li>
+        <li><a href="/html/about.html">About</a></li>
+        <li><a href="/html/contact.html">Contact</a></li>
+        <li>
+          <a href="cart.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1.4"></circle>
+              <circle cx="20" cy="21" r="1.4"></circle>
+              <path d="M1 1h4l2.4 12h13.6l2-8H6"></path>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- PRODUCT DETAILS LAYOUT -->
+<section class="single-product" id="productDetails">
+  <div class="single-product-image">
+    <img id="productImg" src="" alt="">
+    
+    <!-- thumbnails under main image -->
+    <div class="single-product-thumbs" id="productThumbs">
+      <!-- JS will fill these; or you can put static <img> tags here -->
+    </div>
+  </div>
+
+  <div class="single-product-info">
+    <p class="single-product-breadcrumb">Home / T-Shirt</p>
+    <h1 id="productName">Product Name</h1>
+    <h2 id="productPrice">$0.00</h2>
+
+    <select id="productSize">
+      <option value="">Select Size</option>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="single-product-actions">
+      <input type="number" id="productQty" value="1" min="1">
+      <button id="addToCartBtn" class="btn">Add To Cart</button>
+    </div>
+
+    <h3>Product Details</h3>
+    <p id="productDescription"></p>
+  </div>
+</section>
+
+
+  <script type="module" src="../js/productPage.js"></script>
+</body>
+</html>

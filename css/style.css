@@ -8,7 +8,26 @@
 body {
   background: #f9f9f9;
   color: #333;
+  overflow-x: hidden;
 }
+
+
+/* GLOBAL LINK RESET */
+a {
+  text-decoration: none;
+  color: inherit;      /* use whatever text color the parent has */
+}
+
+a:visited {
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: none;  /* keep it clean on hover too */
+}
+
+
+
 
 /* NAVIGATION */
 .navbar {
@@ -33,15 +52,31 @@ nav ul {
   list-style: none;
 }
 
-nav li {
-  cursor: pointer;
+nav a {
   font-size: 17px;
+  cursor: pointer;
   transition: .3s;
+  color: #4b2c82;          /* pick any base color you like */
 }
 
-nav .active, nav li:hover {
+nav a.active,
+nav a:hover {
   color: #0bb79d;
 }
+
+.product-card a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-card a:hover {
+  color: #0bb79d;     /* subtle color change on hover, no underline */
+}
+
+
+
+
+
 
 /* HERO SECTION */
 .hero {
@@ -51,6 +86,8 @@ nav .active, nav li:hover {
   padding: 60px 8%;
   background: #eef1ff;
   height: 550px;
+  gap: 40px;        /* add a gap instead of big margin on the image */
+  flex-wrap: wrap; 
 }
 
 .hero-text {
@@ -95,18 +132,11 @@ nav .active, nav li:hover {
 
 /* FIX IMAGE TO MATCH TEMPLATE */
 .hero-img {
-  width: 480px;
-  height: auto;
-  object-fit: contain;
-}
-
-.hero-img {
-  height: 250%;         /* image fills hero height but DOES NOT stretch hero */
+  height: 500px;      /* makes it taller = “bigger” */
   width: auto;
   object-fit: contain;
-  margin-left:100px;       /* remove huge offset */
+  flex-shrink: 0;     /* don’t let flexbox shrink it */
 }
-
 
 /* BUTTONS */
 .btn, .btn-outline {
@@ -651,4 +681,156 @@ nav .active, nav li:hover {
 .product-cart-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+
+
+/* ======= SINGLE PRODUCT PAGE ======= */
+
+.single-product {
+  max-width: 1150px;
+  margin: 80px auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  column-gap: 60px;
+  align-items: flex-start;
+}
+
+/* LEFT SIDE */
+
+.single-product-image {
+  background: #ffffff;
+  border: 1px solid #e9e9e9;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.single-product-image img#productImg {
+  width: 100%;
+  max-width: 420px;
+  object-fit: contain;
+}
+
+/* Thumbnails row under main image */
+.single-product-thumbs {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.single-product-thumbs img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.single-product-thumbs img.active,
+.single-product-thumbs img:hover {
+  border-color: #26a17b;      /* accent like the green button */
+  box-shadow: 0 0 0 2px rgba(38, 161, 123, 0.15);
+  transform: translateY(-2px);
+}
+
+/* RIGHT SIDE */
+
+.single-product-info {
+  padding-top: 10px;
+}
+
+.single-product-breadcrumb {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.single-product-info h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.single-product-info h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 18px;
+}
+
+/* Select + quantity + button */
+
+.single-product-info select {
+  margin-bottom: 15px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 170px;
+}
+
+.single-product-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.single-product-actions input[type="number"] {
+  width: 70px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+/* reuse your .btn class, but tweak size for this page if needed */
+.single-product-actions .btn {
+  padding: 11px 26px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Product details text */
+
+.single-product-info h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.single-product-info #productDescription {
+  font-size: 0.93rem;
+  line-height: 1.7;
+  color: #555;
+  max-width: 480px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .single-product {
+    grid-template-columns: 1fr;
+    row-gap: 40px;
+  }
+
+  .single-product-image {
+    margin: 0 auto;
+  }
+}
+
+
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    height: auto;
+  }
+
+  .hero-img {
+    height: 500px;   /* slightly smaller on tablets/phones */
+  }
 }

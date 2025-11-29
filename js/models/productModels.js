@@ -25,3 +25,16 @@ export const ProductModel = {
   getFeatured: () => [...featured],
   getProducts: () => [...allProducts]
 };
+
+
+const products = [
+  {
+    id: 1,
+    brand: "adidas",
+    name: "Cartoon Astronaut T-Shirts",
+    price: 78,
+    img: "/img/arrival1.jpg",
+    description: "The Gildan Ultra Cotton T-shirt is made from a substantial 6.0 oz..."
+  },
+  // ...
+];
