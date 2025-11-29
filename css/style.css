@@ -224,12 +224,13 @@ nav .active, nav li:hover {
 .shop-banner {
   width: 100%;
   height: 260px;
-  background: url("../img/shop-banner.png") center/cover no-repeat;
+  background: url("../img/shopp.jpg") center/cover no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: rgb(255, 255, 255);
+  background-color: #dde3ef;
 }
 
 .shop-banner h1 {
@@ -589,4 +590,65 @@ nav .active, nav li:hover {
   cursor: pointer;
   width: 100%;
   margin-top: 10px;
+}
+
+
+
+
+.product-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.2rem;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.04);
+}
+
+.product-img {
+  width: 100%;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.product-info {
+  margin-top: 0.8rem;
+}
+
+.product-brand {
+  font-size: 0.8rem;
+  color: #777;
+  text-transform: lowercase;
+}
+
+.product-name {
+  font-size: 0.9rem;
+  margin: 0.2rem 0 0.6rem;
+}
+
+.product-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.product-price {
+  font-weight: 600;
+  color: #111;
+}
+
+.product-cart-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: #e8f9f1;
+  color: #088178;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.product-cart-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
