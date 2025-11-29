@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart – Cara</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<header class="navbar">
+  <div class="logo">Cara</div>
+    <nav>
+      <ul>
+        <li><a  href="/index.html">Home</a></li>
+        <li><a  href="/html/shop.html">Shop</a></li>
+        <li><a  href="/html/blog.html">Blog</a></li>
+        <li><a  href="/html/about.html">About</a></li>
+        <li><a  href="/html/contact.html">Contact</a></li>
+
+
+                <li>
+          <a class="active" href="cart.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1.4"></circle>
+              <circle cx="20" cy="21" r="1.4"></circle>
+              <path d="M1 1h4l2.4 12h13.6l2-8H6"></path>
+            </svg>
+          </a>
+      </li>
+
+      </ul>
+    </nav>
+</header>
+
+<!-- CART BANNER -->
+<section class="cart-banner">
+  <h1>#cart</h1>
+  <p>Add your coupon code & SAVE up to 70%!</p>
+</section>
+
+<!-- CART TABLE -->
+<section class="cart-section">
+
+  <table class="cart-table">
+    <thead>
+      <tr>
+        <th>REMOVE</th>
+        <th>IMAGE</th>
+        <th>PRODUCT</th>
+        <th>PRICE</th>
+        <th>QUANTITY</th>
+        <th>SUBTOTAL</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td class="remove">×</td>
+        <td><img src="../img/p1.png" class="cart-img"></td>
+        <td>Cartoon Astronaut T-Shirts</td>
+        <td>$118.19</td>
+        <td><input type="number" value="1"></td>
+        <td>$118.19</td>
+      </tr>
+
+      <tr>
+        <td class="remove">×</td>
+        <td><img src="../img/p2.png" class="cart-img"></td>
+        <td>Cartoon Astronaut T-Shirts</td>
+        <td>$118.19</td>
+        <td><input type="number" value="1"></td>
+        <td>$118.19</td>
+      </tr>
+
+      <tr>
+        <td class="remove">×</td>
+        <td><img src="../img/p3.png" class="cart-img"></td>
+        <td>Cartoon Astronaut T-Shirts</td>
+        <td>$118.19</td>
+        <td><input type="number" value="1"></td>
+        <td>$118.19</td>
+      </tr>
+    </tbody>
+  </table>
+
+</section>
+
+<!-- COUPON + TOTALS -->
+<section class="cart-bottom">
+
+  <div class="coupon-box">
+    <h3>Apply Coupon</h3>
+    <div class="coupon-input">
+      <input type="text" placeholder="Enter Your Coupon">
+      <button class="apply-btn">Apply</button>
+    </div>
+  </div>
+
+  <div class="cart-totals">
+    <h3>Cart Totals</h3>
+
+    <table>
+      <tr>
+        <td>Cart Subtotal</td>
+        <td>$335</td>
+      </tr>
+      <tr>
+        <td>Shipping</td>
+        <td>Free</td>
+      </tr>
+      <tr>
+        <td><strong>Total</strong></td>
+        <td><strong>$335</strong></td>
+      </tr>
+    </table>
+
+    <button class="checkout-btn">Proceed to checkout</button>
+  </div>
+
+</section>
+
+<script src="../js/app.js"></script>
+
+</body>
+</html>
