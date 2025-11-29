@@ -302,13 +302,12 @@ nav a:hover {
 .blog-banner {
   width: 100%;
   height: 260px;
-  background: url("../img/blog-banner.png") center/cover no-repeat;
+  background: url("../img/about.jpg") center/cover no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: rgb(61, 66, 142);
-  background-color: #e3e5ec;
+  color: rgb(255, 255, 255);
 }
 
 .blog-banner h1 {
@@ -372,13 +371,15 @@ nav a:hover {
 .about-banner {
   width: 100%;
   height: 260px;
-  background: url("../img/about-banner.png") center/cover no-repeat;
+  background: url("../img/aboutt.jpg") center/cover no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: white;
+  color: rgb(64, 4, 162);
+  background-color: #d9d7e9;
+  
 }
 
 .about-banner h1 {
@@ -432,6 +433,7 @@ nav a:hover {
   align-items: center;
   text-align: center;
   color: white;
+  background-color: #061839;
 }
 
 .contact-banner h1 {

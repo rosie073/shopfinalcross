@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cara Blog</title>
+  <title>Chuchu Blog</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <!-- NAV BAR -->
 <header class="navbar">
-  <div class="logo">Cara</div>
+  <div class="logo">Chuchu</div>
     <nav>
       <ul>
         <li><a  href="/index.html">Home</a></li>
@@ -44,23 +44,23 @@
 <!-- BLOG ARTICLES -->
 <section class="blog-list">
 
-  <!-- ARTICLE 1 -->
-  <div class="blog-card">
+  <!-- ARTICLE 1 – PAGE 1 -->
+  <div class="blog-card" data-page="1">
     <div class="date">11/01</div>
     <img src="../img/blo1.jpg" class="blog-img">
     <div class="blog-content">
       <h3>The Cotton-Jersey Zip-Up Hoodie</h3>
+      <p>
         Soft, structured and endlessly wearable. Our cotton-jersey zip-up hoodie
         is cut with a relaxed silhouette that layers easily over tees or shirts.
         Finished with clean ribbed cuffs and a plush inner lining, it’s the piece
         you’ll reach for on coffee runs, travel days and everything in between.
       </p>
-
     </div>
   </div>
 
-  <!-- ARTICLE 2 -->
-  <div class="blog-card">
+  <!-- ARTICLE 2 – PAGE 1 -->
+  <div class="blog-card" data-page="1">
     <div class="date">11/02</div>
     <img src="../img/blo2.jpg" class="blog-img">
     <div class="blog-content">
@@ -71,23 +71,38 @@
         away from the face. Finish with a soft matte pomade to define the
         shape without stiffness for a look that works from office to evening.
       </p>
-     
     </div>
   </div>
 
-  <!-- ARTICLE 3 -->
-  <div class="blog-card">
+  <!-- ARTICLE 3 – PAGE 2 -->
+  <div class="blog-card" data-page="2">
     <div class="date">11/03</div>
     <img src="../img/blo3.png" class="blog-img">
     <div class="blog-content">
-    <h3>AW20 Menswear Trends</h3>
-    <p>
-      From oversized coats to clean minimalist knits, AW20 menswear is all
-      about soft structure and easy layering. Neutral tones are refreshed with
-      warm camel and rust, while technical fabrics keep classic pieces
-      practical for everyday wear. Style it with tapered trousers and simple
-      sneakers for a modern, laid-back look.
-    </p>
+      <h3>AW20 Menswear Trends</h3>
+      <p>
+        From oversized coats to clean minimalist knits, AW20 menswear is all
+        about soft structure and easy layering. Neutral tones are refreshed with
+        warm camel and rust, while technical fabrics keep classic pieces
+        practical for everyday wear. Style it with tapered trousers and simple
+        sneakers for a modern, laid-back look.
+      </p>
+    </div>
+  </div>
+
+  <!-- ARTICLE 4 – PAGE 2 (example extra post) -->
+  <div class="blog-card" data-page="2">
+    <div class="date">11/04</div>
+    <img src="../img/blo4.jpg" class="blog-img">
+    <div class="blog-content">
+      <h3>Building a Capsule Wardrobe</h3>
+      <p>
+          Effortless style starts with pieces that do more with less. This soft cream
+          sweater and tailored sand-toned trousers are the kind of neutrals that mix
+          with everything in your closet. Add simple gold accents and clean sneakers
+          or heels and you’ve got a polished look you can dress up or down all season
+          long.
+      </p>
     </div>
   </div>
 
@@ -95,10 +110,57 @@
 
 <!-- PAGINATION -->
 <div class="pagination">
-  <button class="active">1</button>
-  <button>2</button>
-  <button>→</button>
+  <button class="active" data-page="1">1</button>
+  <button data-page="2">2</button>
+  <button data-page="next">→</button>
 </div>
+
+<script>
+  const cards = document.querySelectorAll(".blog-card");
+  const pagBtns = document.querySelectorAll(".pagination button");
+  let currentPage = 1;
+  const maxPage = 2; // you have 2 pages
+
+  function showPage(page) {
+    currentPage = page;
+
+    // show/hide cards
+    cards.forEach(card => {
+      card.style.display = card.dataset.page === String(page) ? "flex" : "none";
+    });
+
+    // update active state on buttons
+    pagBtns.forEach(btn => {
+      const btnPage = btn.dataset.page;
+      btn.classList.toggle("active", btnPage === String(page));
+    });
+  }
+
+  pagBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.page;
+
+      if (target === "next") {
+        const nextPage = currentPage === maxPage ? 1 : currentPage + 1;
+        showPage(nextPage);
+      } else {
+        showPage(Number(target));
+      }
+    });
+  });
+
+  // initial state: show page 1 only
+  showPage(1);
+</script>
+
+<script src="../js/app.js"></script>
+
+
+
+
+
+
+
 
 <script src="../js/app.js"></script>
 
