@@ -298,8 +298,6 @@ nav a:hover {
 
 
 
-
-
 /* BLOG BANNER */
 .blog-banner {
   width: 100%;
@@ -309,7 +307,8 @@ nav a:hover {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: rgb(61, 66, 142);
+  background-color: #e3e5ec;
 }
 
 .blog-banner h1 {
