@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chuchu Shop</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <!-- removed leading / -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -13,34 +14,33 @@
     <div class="logo">Chuchu</div>
     <nav>
       <ul>
-        <li><a class="active" href="/index.html">Home</a></li>
-        <li><a href="/html/shop.html">Shop</a></li>
-        <li><a href="/html/blog.html">Blog</a></li>
-        <li><a href="/html/about.html">About</a></li>
-        <li><a href="/html/contact.html">Contact</a></li>
-        
+        <!-- removed leading / -->
+        <li><a class="active" href="index.html">Home</a></li>
+        <li><a href="html/shop.html">Shop</a></li>
+        <li><a href="html/blog.html">Blog</a></li>
+        <li><a href="html/about.html">About</a></li>
+        <li><a href="html/contact.html">Contact</a></li>
 
         <li>
-              <a href="html/cart.html">
-                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none"
-                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="9" cy="21" r="1.4"></circle>
-                  <circle cx="20" cy="21" r="1.4"></circle>
-                  <path d="M1 1h4l2.4 12h13.6l2-8H6"></path>
-                </svg>
-              </a>
-       </li>
+          <a href="html/cart.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1.4"></circle>
+              <circle cx="20" cy="21" r="1.4"></circle>
+              <path d="M1 1h4l2.4 12h13.6l2-8H6"></path>
+            </svg>
+          </a>
+        </li>
 
       </ul>
     </nav>
-
   </header>
 
   <!-- HERO SECTION -->
   <section class="hero">
     <div class="hero-text">
       <h4>Trade-in-offer</h4>
-     <h1>
+      <h1>
         Super value deals<br>
         <span>On all products</span>
       </h1>
@@ -49,17 +49,18 @@
       <a href="html/shop.html" class="btn">Shop Now</a>
     </div>
 
-  <img src="/img/homie.png" class="hero-img">
-</section>
+    <!-- removed leading / -->
+    <img src="img/homie.png" class="hero-img">
+  </section>
 
   <!-- FEATURES / CATEGORIES -->
   <section class="categories">
-    <div class="cat-card"><img src="/img/free.png"><p>Free Shipping</p></div>
-    <div class="cat-card"><img src="/img/onlineorder.png"><p>Online Order</p></div>
-    <div class="cat-card"><img src="/img/save.png"><p>Save Money</p></div>
-    <div class="cat-card"><img src="/img/promo.png"><p>Promotions</p></div>
-    <div class="cat-card"><img src="/img/sell.png"><p>Happy Sell</p></div>
-    <div class="cat-card"><img src="/img/support.png"><p>24/7 Support</p></div>
+    <div class="cat-card"><img src="img/free.png"><p>Free Shipping</p></div>
+    <div class="cat-card"><img src="img/onlineorder.png"><p>Online Order</p></div>
+    <div class="cat-card"><img src="img/save.png"><p>Save Money</p></div>
+    <div class="cat-card"><img src="img/promo.png"><p>Promotions</p></div>
+    <div class="cat-card"><img src="img/sell.png"><p>Happy Sell</p></div>
+    <div class="cat-card"><img src="img/support.png"><p>24/7 Support</p></div>
   </section>
 
   <!-- NEW ARRIVALS -->
@@ -85,6 +86,7 @@
 
   <section class="product-grid" id="featuredProducts"></section>
 
+  <!-- this one was already relative - good -->
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
