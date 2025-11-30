@@ -1,22 +1,3 @@
-/*export const ProductView = {
-  render(list, containerID) {
-    const container = document.getElementById(containerID);
-    if (!container) return;
-
-    container.innerHTML = "";
-    list.forEach(p => {
-      container.innerHTML += `
-        <div class="product-card">
-          <img src="${p.img}" alt="${p.name}">
-          <h4>${p.brand}</h4>
-          <p>${p.name}</p>
-          <div class="price">$${p.price}</div>
-        </div>
-      `;
-    });
-  }
-};
-*/
 
 // /js/views/productViews.js
 export const ProductView = {
@@ -26,10 +7,16 @@ export const ProductView = {
 
     container.innerHTML = "";
 
+    // if URL contains /html/, we’re on shop/product/cart pages
+    const needsParent = window.location.pathname.includes("/html/");
+    const prefix = needsParent ? "../" : "";
+
     list.forEach(p => {
+      const imgSrc = `${prefix}${p.img}`;
+
       container.innerHTML += `
-        <a href="/html/product.html?id=${p.id}" class="product-card">
-          <img src="${p.img}" alt="${p.name}" class="product-img">
+        <a href="${needsParent ? "product.html" : "html/product.html"}?id=${p.id}" class="product-card">
+          <img src="${imgSrc}" alt="${p.name}" class="product-img">
 
           <div class="product-info">
             <span class="product-brand">${p.brand}</span>
