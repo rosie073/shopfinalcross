@@ -29,7 +29,7 @@ const AppController = (() => {
           // Check if admin
           const isAdmin = await AuthService.checkAdminStatus(user);
           const tokenResult = await user.getIdTokenResult(true);
-          console.log(tokenResult);
+          console.log(isAdmin);
           if (isAdmin && navUl) {
             const adminLi = document.createElement("li");
             adminLi.id = "adminLink";

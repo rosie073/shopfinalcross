@@ -4,7 +4,7 @@ import {
   signOut,
   onAuthStateChanged
 } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/app.js";
 
 export const AuthService = {
@@ -59,7 +59,19 @@ export const AuthService = {
     if (!user) return false;
     try {
       const tokenResult = await user.getIdTokenResult(true);
-      return !!tokenResult.claims.isAdmin;
+      if (tokenResult.claims?.isAdmin) return true;
+
+      // Firestore admin collection: admin/{uid} -> { isAdmin: true }
+      try {
+        const adminDoc = await getDoc(doc(db, "admin", user.uid));
+        if (adminDoc.exists() && adminDoc.data().isAdmin === true) return true;
+      } catch (e) {
+        console.warn("Admin collection read blocked; falling back to users collection.");
+      }
+
+      // Fallback to users/{uid} -> { isAdmin: true }
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      return userDoc.exists() && userDoc.data().isAdmin === true;
     } catch (error) {
       console.error("Error checking admin status:", error);
       return false;
