@@ -2,12 +2,12 @@
 import { ProductModel } from "./models/productModels.js";
 
 const ProductPageController = (() => {
-  const loadProduct = () => {
+  const loadProduct = async () => {
     const params = new URLSearchParams(window.location.search);
     const idParam = params.get("id");
     const id = Number(idParam);
 
-    const allProducts = ProductModel.getProducts();
+    const allProducts = await ProductModel.getProducts();
     const product = allProducts.find(p => p.id === id);
 
     const wrapper = document.getElementById("productDetails");

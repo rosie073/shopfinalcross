@@ -7,16 +7,24 @@ const ShopController = (() => {
   const itemsPerPage = 10;
   let totalPages = 1;
 
-  const renderPage = () => {
-    const allProducts = ProductModel.getProducts();
-    totalPages = Math.ceil(allProducts.length / itemsPerPage);
+  
+const renderPage = async () => {
+  const allProducts = await ProductModel.getProducts(); 
 
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
+  if (!Array.isArray(allProducts)) {
+    console.error("getProducts() did not return an array:", allProducts);
+    return;
+  }
 
-    ProductView.render(allProducts.slice(start, end), "shopProducts");
-    updatePaginationUI();
-  };
+  totalPages = Math.max(1, Math.ceil(allProducts.length / itemsPerPage));
+
+  const start = (currentPage - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+
+  const pageProducts = allProducts.slice(start, end); // now safe
+  // whatever you use to show them:
+  ProductView.renderProducts(pageProducts);
+};
 
   const updatePaginationUI = () => {
     // number buttons
