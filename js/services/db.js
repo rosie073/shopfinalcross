@@ -7,13 +7,22 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
-  writeBatch
+  writeBatch,
+  serverTimestamp
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase/app.js";
 
 const PRODUCTS_COLLECTION = "products";
 const CARTS_COLLECTION = "carts";
+
+const toMillis = (value) => {
+  if (!value) return 0;
+  if (typeof value.toMillis === "function") return value.toMillis();
+  if (value.seconds) return value.seconds * 1000 + Math.floor((value.nanoseconds || 0) / 1_000_000);
+  if (value instanceof Date) return value.getTime();
+  return Number(value) || 0;
+};
 
 export const DBService = {
   // --- Products ---
@@ -28,6 +37,7 @@ export const DBService = {
         const id = isNaN(Number(doc.id)) ? doc.id : Number(doc.id);
         products.push({ id, ...doc.data() });
       });
+      products.sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
       return products;
     } catch (e) {
       console.error("Error getting products: ", e);
@@ -55,8 +65,12 @@ export const DBService = {
   // Add a new product (Auto ID)
   addProduct: async (productData) => {
     try {
-      const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), productData);
-      return { id: docRef.id, ...productData };
+      const payload = {
+        ...productData,
+        createdAt: serverTimestamp()
+      };
+      const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), payload);
+      return { id: docRef.id, ...payload };
     } catch (e) {
       console.error("Error adding product: ", e);
       throw e;
@@ -107,7 +121,10 @@ export const DBService = {
     const batch = writeBatch(db);
     products.forEach((product) => {
       const docRef = doc(db, PRODUCTS_COLLECTION, String(product.id));
-      batch.set(docRef, product);
+      batch.set(docRef, {
+        ...product,
+        createdAt: product.createdAt || serverTimestamp()
+      });
     });
     await batch.commit();
     console.log("Products seeded successfully");

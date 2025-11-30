@@ -1,5 +1,6 @@
 import { DBService } from "./services/db.js";
 import { AuthService } from "./services/auth.js";
+import { ProductModel } from "./models/productModels.js";
 
 const AdminController = (() => {
   let products = [];
@@ -27,7 +28,7 @@ const AdminController = (() => {
   };
 
   const loadProducts = async () => {
-    products = await DBService.getAllProducts();
+    products = await ProductModel.getProducts();
     renderProducts(products);
   };
 
@@ -156,6 +157,7 @@ const AdminController = (() => {
       }
 
       modal.style.display = "none";
+      ProductModel.invalidateCache();
       loadProducts();
 
     } catch (error) {
@@ -172,6 +174,7 @@ const AdminController = (() => {
       try {
         await DBService.deleteProduct(id);
         alert("Product deleted.");
+        ProductModel.invalidateCache();
         loadProducts();
       } catch (error) {
         console.error(error);

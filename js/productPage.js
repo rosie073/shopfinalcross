@@ -8,7 +8,7 @@ const ProductPageController = (() => {
     const id = Number(idParam);
 
     const allProducts = await ProductModel.getProducts();
-    const product = allProducts.find(p => p.id === id);
+    const product = allProducts.find((p) => Number(p.id) === id);
 
     const wrapper = document.getElementById("productDetails");
     if (!product) {
@@ -16,22 +16,23 @@ const ProductPageController = (() => {
       return;
     }
 
-    const imgEl   = document.getElementById("productImg");
-    const nameEl  = document.getElementById("productName");
+    const imgEl = document.getElementById("productImg");
+    const nameEl = document.getElementById("productName");
     const priceEl = document.getElementById("productPrice");
-    const descEl  = document.getElementById("productDescription");
+    const descEl = document.getElementById("productDescription");
 
-    // 👇 this is the important bit for GitHub Pages
+    // dY`� this is the important bit for GitHub Pages
     const prefix = window.location.pathname.includes("/html/") ? "../" : "";
-    const mainImgSrc = prefix + product.img;
+    const isRemoteImg = /^https?:\/\//i.test(product.img);
+    const mainImgSrc = isRemoteImg ? product.img : prefix + product.img;
 
     if (imgEl) {
       imgEl.src = mainImgSrc;
       imgEl.alt = product.name;
     }
-    if (nameEl)  nameEl.textContent  = product.name;
-    if (priceEl) priceEl.textContent = `$${product.price.toFixed(2)}`;
-    if (descEl)  descEl.textContent  = product.description || "Nice and comfy shirt.";
+    if (nameEl) nameEl.textContent = product.name;
+    if (priceEl) priceEl.textContent = `$${Number(product.price).toFixed(2)}`;
+    if (descEl) descEl.textContent = product.description || "Nice and comfy shirt.";
 
     // THUMBNAILS
     const thumbsContainer = document.getElementById("productThumbs");
@@ -44,14 +45,15 @@ const ProductPageController = (() => {
 
       gallery.forEach((src, index) => {
         const thumb = document.createElement("img");
-        thumb.src = prefix + src;          // 👈 use same prefix here
+        const thumbIsRemote = /^https?:\/\//i.test(src);
+        thumb.src = thumbIsRemote ? src : prefix + src; // dY`^ use same prefix here
         if (index === 0) thumb.classList.add("active");
 
         thumb.addEventListener("click", () => {
-          imgEl.src = prefix + src;
+          imgEl.src = thumbIsRemote ? src : prefix + src;
           document
             .querySelectorAll(".single-product-thumbs img")
-            .forEach(t => t.classList.remove("active"));
+            .forEach((t) => t.classList.remove("active"));
           thumb.classList.add("active");
         });
 

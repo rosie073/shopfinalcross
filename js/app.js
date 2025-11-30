@@ -48,16 +48,17 @@ const AppController = (() => {
     });
 
     try {
-      let newArrivals = await ProductModel.getNewArrivals();
-      let featured = await ProductModel.getFeatured();
+      let allProducts = await ProductModel.getProducts();
 
-      // If empty, attempt to seed; if Firestore blocks, show local data instead
-      if (newArrivals.length === 0 && featured.length === 0) {
+      // Only seed when there is absolutely no data
+      if (allProducts.length === 0) {
         console.log("No products found. Seeding...");
         await ProductModel.seedData();
-        newArrivals = await ProductModel.getNewArrivals();
-        featured = await ProductModel.getFeatured();
+        allProducts = await ProductModel.getProducts();
       }
+
+      const newArrivals = allProducts.slice(0, 4);
+      const featured = allProducts.slice(4, 12);
 
       ProductView.render(newArrivals, "newArrival");
       ProductView.render(featured, "featuredProducts");

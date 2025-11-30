@@ -19,34 +19,61 @@ const SEED_PRODUCTS = [
 
 // Cache products after first load to avoid redundant fetches
 let cachedProducts = [];
+let hasLiveData = false;
 
 const getSeedCopy = () => SEED_PRODUCTS.map(p => ({ ...p }));
+const isSeedProduct = (product = {}) => {
+  const name = (product.name || "").toLowerCase();
+  const brand = (product.brand || "").toLowerCase();
+  return SEED_PRODUCTS.some(
+    seed =>
+      seed.name.toLowerCase() === name &&
+      seed.brand.toLowerCase() === brand
+  );
+};
+
+const filterOutSeedsWhenLiveExist = (products = []) => {
+  const nonSeed = products.filter(p => !isSeedProduct(p));
+  // If any real products exist, only return them; otherwise keep whatever is there
+  return nonSeed.length > 0 ? nonSeed : products;
+};
 
 export const ProductModel = {
   getNewArrivals: async () => {
     const all = await ProductModel.getProducts();
-    return all.filter(p => p.id >= 1 && p.id <= 4);
+    return all.slice(0, 4);
   },
 
   getFeatured: async () => {
     const all = await ProductModel.getProducts();
-    return all.filter(p => p.id >= 5 && p.id <= 14);
+    return all.slice(4, 12);
   },
 
   getProducts: async () => {
     if (cachedProducts.length > 0) return cachedProducts;
+
     try {
       const fromDb = await DBService.getAllProducts();
-      if (fromDb.length > 0) {
-        cachedProducts = fromDb;
+      const filtered = filterOutSeedsWhenLiveExist(fromDb);
+      if (Array.isArray(filtered) && filtered.length > 0) {
+        hasLiveData = true;
+        cachedProducts = filtered;
         return cachedProducts;
       }
       console.warn("Products collection empty; using local seed data.");
     } catch (e) {
       console.warn("Failed to load products from Firestore; using local seed data.", e);
     }
+
+    // If we reach here, no live data yet; fall back to seeds
     cachedProducts = getSeedCopy();
     return cachedProducts;
+  },
+
+  hasLiveProducts: () => hasLiveData,
+
+  invalidateCache: () => {
+    cachedProducts = [];
   },
 
   seedData: async () => {

@@ -12,8 +12,9 @@ export const ProductView = {
     const prefix = needsParent ? "../" : "";
 
     list.forEach(p => {
+      const isRemoteImg = /^https?:\/\//i.test(p.img);
       const imgPath = p.img?.startsWith("/") ? p.img.slice(1) : p.img;
-      const imgSrc = `${prefix}${imgPath}`;
+      const imgSrc = isRemoteImg ? p.img : `${prefix}${imgPath}`;
 
       container.innerHTML += `
         <a href="${needsParent ? "product.html" : "html/product.html"}?id=${p.id}" class="product-card">
