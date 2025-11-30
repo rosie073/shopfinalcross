@@ -4,9 +4,13 @@ import {
   doc,
   getDoc,
   setDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
   writeBatch
 } from "firebase/firestore";
-import { db } from "../firebase/app.js";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "../firebase/app.js";
 
 const PRODUCTS_COLLECTION = "products";
 const CARTS_COLLECTION = "carts";
@@ -20,7 +24,9 @@ export const DBService = {
       const querySnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
       const products = [];
       querySnapshot.forEach((doc) => {
-        products.push({ id: Number(doc.id), ...doc.data() });
+        // Handle both numeric IDs (legacy) and string IDs (auto-generated)
+        const id = isNaN(Number(doc.id)) ? doc.id : Number(doc.id);
+        products.push({ id, ...doc.data() });
       });
       return products;
     } catch (e) {
@@ -29,21 +35,70 @@ export const DBService = {
     }
   },
 
-  // Fetch single product by ID (assuming ID is stored as document ID or field)
-  // Based on current architecture, IDs are numbers like 1, 2, 3.
-  // We will store them as document IDs "1", "2", "3" for simplicity.
+  // Fetch single product by ID
   getProductById: async (id) => {
     try {
       const docRef = doc(db, PRODUCTS_COLLECTION, String(id));
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        return { id: Number(docSnap.id), ...docSnap.data() };
+        const docId = isNaN(Number(docSnap.id)) ? docSnap.id : Number(docSnap.id);
+        return { id: docId, ...docSnap.data() };
       } else {
         return null;
       }
     } catch (e) {
       console.error("Error getting product: ", e);
       return null;
+    }
+  },
+
+  // Add a new product (Auto ID)
+  addProduct: async (productData) => {
+    try {
+      const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), productData);
+      return { id: docRef.id, ...productData };
+    } catch (e) {
+      console.error("Error adding product: ", e);
+      throw e;
+    }
+  },
+
+  // Update a product
+  updateProduct: async (id, productData) => {
+    try {
+      const docRef = doc(db, PRODUCTS_COLLECTION, String(id));
+      await updateDoc(docRef, productData);
+      return { id, ...productData };
+    } catch (e) {
+      console.error("Error updating product: ", e);
+      throw e;
+    }
+  },
+
+  // Delete a product
+  deleteProduct: async (id) => {
+    try {
+      const docRef = doc(db, PRODUCTS_COLLECTION, String(id));
+      await deleteDoc(docRef);
+      return true;
+    } catch (e) {
+      console.error("Error deleting product: ", e);
+      throw e;
+    }
+  },
+
+  // Upload product image
+  uploadProductImage: async (file) => {
+    try {
+      const timestamp = Date.now();
+      const fileName = `${timestamp}_${file.name}`;
+      const storageRef = ref(storage, `products/${fileName}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      return downloadURL;
+    } catch (e) {
+      console.error("Error uploading image: ", e);
+      throw e;
     }
   },
 

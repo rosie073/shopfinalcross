@@ -1,53 +1,64 @@
 import { DBService } from "../services/db.js";
 
-// We keep these empty initially, or we can use them as a cache
+const SEED_PRODUCTS = [
+  { id: 1, brand: "Chu", name: "Summer Loose Shirt", price: 78, img: "/img/ariival.png" },
+  { id: 2, brand: "Chu", name: "Casual Polo Shirt", price: 79, img: "/img/arrival2.jpg" },
+  { id: 3, brand: "Chu", name: "Classic Men Shirt", price: 71, img: "/img/arrival6.png" },
+  { id: 4, brand: "Chu", name: "Minimalist Shirt", price: 82, img: "/img/arrival4.png" },
+  { id: 5, brand: "Chu", name: "Tank Tops for Womens 2025 Summer Casual Crewneck Tunic", price: 78, img: "/img/fea1.png" },
+  { id: 6, brand: "adidas", name: "Palm Tree Tanks Tops for Mens", price: 88, img: "/img/fea2.png" },
+  { id: 7, brand: "Chu", name: "Firzero 3/4 Sleeve Vintage Embroidery Shirts ", price: 94, img: "/img/fea3.png" },
+  { id: 8, brand: "Sinzelimin", name: "Men's Shirts Fall Tops Vintage Plaid Printed Button", price: 102, img: "/img/fea4.png" },
+  { id: 9, brand: "Chu", name: "Summer Soild Color Crew Neck Tees", price: 78, img: "/img/fea5.png" },
+  { id: 10, brand: "Chu", name: "Sleeveless Athletic Workout Gym Shirts", price: 88, img: "/img/fea6.png" },
+  { id: 11, brand: "Chu", name: "ace Bralettes for Women Sexy Floral", price: 94, img: "/img/fea7.png" },
+  { id: 12, brand: "Chu", name: "Cotton Linen Button Down Shirts Dressy", price: 102, img: "/img/fea8.png" },
+  { id: 13, brand: "Chu", name: "Crew Neck Tops Fashion Flowy Print", price: 94, img: "/img/fea9.png" },
+  { id: 14, brand: "Chu", name: "Saodimallsu Womens Cap Sleeve Crop Top", price: 102, img: "/img/fea10.png" }
+];
+
+// Cache products after first load to avoid redundant fetches
 let cachedProducts = [];
 
+const getSeedCopy = () => SEED_PRODUCTS.map(p => ({ ...p }));
+
 export const ProductModel = {
-  // Now async
   getNewArrivals: async () => {
     const all = await ProductModel.getProducts();
-    // Assuming first 4 are new arrivals (logic from original file)
-    // Original: id 1-4
     return all.filter(p => p.id >= 1 && p.id <= 4);
   },
 
   getFeatured: async () => {
     const all = await ProductModel.getProducts();
-    // Original: id 5-14
     return all.filter(p => p.id >= 5 && p.id <= 14);
   },
 
   getProducts: async () => {
     if (cachedProducts.length > 0) return cachedProducts;
-    cachedProducts = await DBService.getAllProducts();
+    try {
+      const fromDb = await DBService.getAllProducts();
+      if (fromDb.length > 0) {
+        cachedProducts = fromDb;
+        return cachedProducts;
+      }
+      console.warn("Products collection empty; using local seed data.");
+    } catch (e) {
+      console.warn("Failed to load products from Firestore; using local seed data.", e);
+    }
+    cachedProducts = getSeedCopy();
     return cachedProducts;
   },
 
-  // Seed function
   seedData: async () => {
-    // Hardcoded data from original file
-    const newArrivals = [
-      { id: 1, brand: "Chu", name: "Summer Loose Shirt", price: 78, img: "/img/ariival.png" },
-      { id: 2, brand: "Chu", name: "Casual Polo Shirt", price: 79, img: "/img/arrival2.jpg" },
-      { id: 3, brand: "Chu", name: "Classic Men Shirt", price: 71, img: "/img/arrival6.png" },
-      { id: 4, brand: "Chu", name: "Minimalist Shirt", price: 82, img: "/img/arrival4.png" }
-    ];
-
-    const featured = [
-      { id: 5, brand: "Chu", name: "Tank Tops for Womens 2025 Summer Casual Crewneck Tunic", price: 78, img: "/img/fea1.png" },
-      { id: 6, brand: "adidas", name: "Palm Tree Tanks Tops for Mens", price: 88, img: "/img/fea2.png" },
-      { id: 7, brand: "Chu", name: "Firzero 3/4 Sleeve Vintage Embroidery Shirts ", price: 94, img: "/img/fea3.png" },
-      { id: 8, brand: "Sinzelimin", name: "Men's Shirts Fall Tops Vintage Plaid Printed Button", price: 102, img: "/img/fea4.png" },
-      { id: 9, brand: "Chu", name: "Summer Soild Color Crew Neck Tees", price: 78, img: "/img/fea5.png" },
-      { id: 10, brand: "Chu", name: "Sleeveless Athletic Workout Gym Shirts", price: 88, img: "/img/fea6.png" },
-      { id: 11, brand: "Chu", name: "ace Bralettes for Women Sexy Floral", price: 94, img: "/img/fea7.png" },
-      { id: 12, brand: "Chu", name: "Cotton Linen Button Down Shirts Dressy", price: 102, img: "/img/fea8.png" },
-      { id: 13, brand: "Chu", name: "Crew Neck Tops Fashion Flowy Print", price: 94, img: "/img/fea9.png" },
-      { id: 14, brand: "Chu", name: "Saodimallsu Womens Cap Sleeve Crop Top", price: 102, img: "/img/fea10.png" }
-    ];
-
-    const allProducts = [...newArrivals, ...featured];
-    await DBService.seedProducts(allProducts);
+    const allProducts = getSeedCopy();
+    try {
+      await DBService.seedProducts(allProducts);
+      cachedProducts = allProducts;
+      return allProducts;
+    } catch (e) {
+      console.warn("Seeding to Firestore failed; falling back to local data only.", e);
+      cachedProducts = allProducts;
+      return allProducts;
+    }
   }
 };

@@ -22,8 +22,8 @@ const renderPage = async () => {
   const end = start + itemsPerPage;
 
   const pageProducts = allProducts.slice(start, end); // now safe
-  // whatever you use to show them:
-  ProductView.renderProducts(pageProducts);
+  ProductView.render(pageProducts, "shopProducts");
+  updatePaginationUI();
 };
 
   const updatePaginationUI = () => {
