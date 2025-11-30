@@ -3,20 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - ChuChu</title>
+    <title>Register - ChuChu</title>
 
-    <!-- Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Adjust path if needed -->
     <link rel="stylesheet" href="../css/auth.css" />
   </head>
   <body>
-    <!-- Logo header (optional) -->
-   
+    
 
     <div class="auth-wrapper">
       <div class="auth-card">
@@ -34,15 +30,36 @@
           </div>
         </div>
 
-        <!-- RIGHT: LOGIN form -->
+        <!-- RIGHT: REGISTER form -->
         <div class="auth-card-right">
-          <h2 class="auth-title">LOGIN</h2>
+          <h2 class="auth-title">REGISTER</h2>
 
-          <form id="loginForm" class="auth-form">
+          <!-- IMPORTANT: ids match your existing JS (signupForm / signupEmail / signupPassword / signupError) -->
+          <form id="signupForm" class="auth-form">
+            <div class="row">
+              <input
+                type="text"
+                id="fullName"
+                class="auth-input"
+                placeholder="Fullname"
+                required
+              />
+            </div>
+
+            <div class="row">
+              <input
+                type="text"
+                id="username"
+                class="auth-input"
+                placeholder="Username"
+                required
+              />
+            </div>
+
             <div class="row">
               <input
                 type="email"
-                id="loginEmail"
+                id="signupEmail"
                 class="auth-input"
                 placeholder="Email"
                 required
@@ -52,32 +69,41 @@
             <div class="row">
               <input
                 type="password"
-                id="loginPassword"
+                id="signupPassword"
                 class="auth-input"
                 placeholder="Password"
                 required
               />
             </div>
 
-            <div class="auth-extra-row">
-              <input type="checkbox" id="loginRemember" />
-              <label for="loginRemember">Remember me</label>
+            <div class="row">
+              <input
+                type="password"
+                id="confirmPassword"
+                class="auth-input"
+                placeholder="Confirm Password"
+                required
+              />
             </div>
 
-            <button type="submit" class="auth-button">Login</button>
+            <div class="auth-extra-row">
+              <input type="checkbox" id="signupRemember" />
+              <label for="signupRemember">Remember me</label>
+            </div>
 
-            <p id="loginError" class="form-error"></p>
+            <button type="submit" class="auth-button">Register</button>
+
+            <p id="signupError" class="form-error"></p>
 
             <div class="auth-footer">
-              Don’t have an account?
-              <a href="./register.html">Register here</a>
+              Already have an account?
+              <a href="./login.html">Login here</a>
             </div>
           </form>
         </div>
       </div>
     </div>
 
-    <!-- Same JS file you already use -->
     <script type="module" src="/js/login.js"></script>
   </body>
 </html>
