@@ -93,9 +93,44 @@ const Cart = (() => {
   };
 
   const getTotals = () => {
-    const subtotal = currentCart.reduce((sum, i) => sum + i.price * i.qty, 0);
-    return { subtotal, total: subtotal }; // shipping is free
-  };
+  let subtotal = currentCart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  let discount = appliedCoupon ? subtotal * coupons[appliedCoupon] : 0;
+  let total = subtotal - discount;
+
+  return { subtotal, discount, total };
+};
+
+document.addEventListener("click", (e) => {
+  const applyBtn = e.target.closest(".apply-btn");
+  if (!applyBtn) return;
+
+  const input = document.querySelector(".coupon-input input");
+  if (input.value.trim()) applyCoupon(input.value.trim());
+});
+
+
+
+
+
+
+
+  let appliedCoupon = null;
+const coupons = {
+  "SAVE10": 0.10,  // 10%
+  "SAVE20": 0.20   // 20%
+};
+
+const applyCoupon = (code) => {
+  const coupon = code.toUpperCase();
+  if (coupons[coupon]) {
+    appliedCoupon = coupon;
+    alert(`Coupon ${coupon} applied!`);
+    updateTotalsUI();
+  } else {
+    alert("Invalid coupon code.");
+  }
+};
+
 
   const updateCartCountUI = () => {
     const badge = document.querySelector(".cart-count");
@@ -162,15 +197,17 @@ const Cart = (() => {
     updateTotalsUI();
   };
 
-  const updateTotalsUI = () => {
-    const subtotalEl = document.getElementById("cartSubtotal");
-    const totalEl = document.getElementById("cartTotal");
-    if (!subtotalEl || !totalEl) return;
+const updateTotalsUI = () => {
+  const { subtotal, discount, total } = getTotals();
 
-    const { subtotal, total } = getTotals();
-    subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-    totalEl.textContent = `$${total.toFixed(2)}`;
-  };
+  document.getElementById("cartSubtotal").textContent = `$${subtotal.toFixed(2)}`;
+  document.getElementById("cartTotal").textContent = `$${total.toFixed(2)}`;
+
+  localStorage.setItem("checkout_data", JSON.stringify({
+    subtotal, discount, total, appliedCoupon
+  }));
+};
+
 
   const bindCartPageEvents = () => {
     // remove item

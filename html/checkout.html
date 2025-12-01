@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout – Chuchu</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo">Chuchu</div>
+  <nav>
+    <ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="cart.html">Cart</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="checkout-section">
+  <h1>Checkout</h1>
+
+  <div class="checkout-container">
+
+    <!-- LEFT SIDE: Buyer Information -->
+    <div class="checkout-info">
+      <h3>Billing Details</h3>
+
+      <label>Full Name</label>
+      <input type="text" id="buyerName" placeholder="Enter full name">
+
+      <label>Phone Number</label>
+      <input type="text" id="buyerPhone" placeholder="09*********">
+
+      <label>Address</label>
+      <textarea id="buyerAddress" placeholder="Complete address"></textarea>
+
+      <label>Payment Method</label>
+      <select id="paymentMethod">
+        <option value="cod">Cash on Delivery</option>
+        <option value="gcash">GCash</option>
+      </select>
+    </div>
+
+    <!-- RIGHT SIDE: Order Summary -->
+    <div class="checkout-summary">
+      <h3>Order Summary</h3>
+
+      <div id="summaryTotals"></div>
+
+      <button id="placeOrderBtn" class="checkout-btn">Place Order</button>
+    </div>
+
+  </div>
+</section>
+
+<script type="module" src="../js/checkout.js"></script>
+</body>
+</html>

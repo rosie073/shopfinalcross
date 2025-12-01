@@ -84,8 +84,17 @@
       </tr>
     </table>
 
-    <button class="checkout-btn">Proceed to checkout</button>
+    <button class="checkout-btn" id="proceedCheckoutBtn">Proceed to checkout</button>
+
   </div>
+
+
+      <script>
+    document.getElementById("proceedCheckoutBtn").addEventListener("click", () => {
+      window.location.href = "checkout.html";
+    });
+    </script>
+
 </section>
 
 <!-- cart logic -->
