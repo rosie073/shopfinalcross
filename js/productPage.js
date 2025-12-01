@@ -2,6 +2,7 @@
 import { ProductModel } from "./models/productModels.js";
 
 const ProductPageController = (() => {
+
   const loadProduct = async () => {
     const params = new URLSearchParams(window.location.search);
     const idParam = params.get("id");
@@ -21,7 +22,7 @@ const ProductPageController = (() => {
     const priceEl = document.getElementById("productPrice");
     const descEl = document.getElementById("productDescription");
 
-    // dY`� this is the important bit for GitHub Pages
+    // Fix GitHub Pages path
     const prefix = window.location.pathname.includes("/html/") ? "../" : "";
     const isRemoteImg = /^https?:\/\//i.test(product.img);
     const mainImgSrc = isRemoteImg ? product.img : prefix + product.img;
@@ -34,26 +35,31 @@ const ProductPageController = (() => {
     if (priceEl) priceEl.textContent = `$${Number(product.price).toFixed(2)}`;
     if (descEl) descEl.textContent = product.description || "Nice and comfy shirt.";
 
-    // THUMBNAILS
+    // -------------------------------
+    // 🔥 REMOVE THUMBNAILS unless a real gallery exists
+    // -------------------------------
+    const gallery = (product.gallery && product.gallery.length) ? product.gallery : [];
+
     const thumbsContainer = document.getElementById("productThumbs");
-    if (thumbsContainer && imgEl) {
-      const gallery = product.gallery && product.gallery.length
-        ? product.gallery
-        : [product.img, product.img, product.img, product.img]; // repeat main img if no gallery
+    if (thumbsContainer) thumbsContainer.innerHTML = "";
 
-      thumbsContainer.innerHTML = "";
-
+    // Only render thumbnails if gallery has REAL images
+    if (thumbsContainer && gallery.length > 0) {
       gallery.forEach((src, index) => {
         const thumb = document.createElement("img");
         const thumbIsRemote = /^https?:\/\//i.test(src);
-        thumb.src = thumbIsRemote ? src : prefix + src; // dY`^ use same prefix here
+
+        thumb.src = thumbIsRemote ? src : prefix + src;
+
         if (index === 0) thumb.classList.add("active");
 
         thumb.addEventListener("click", () => {
           imgEl.src = thumbIsRemote ? src : prefix + src;
+
           document
             .querySelectorAll(".single-product-thumbs img")
             .forEach((t) => t.classList.remove("active"));
+
           thumb.classList.add("active");
         });
 
