@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chuchu Shop</title>
-  <!-- removed leading / -->
-  <link rel="stylesheet" href="css/style.css">
+
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
@@ -14,28 +14,73 @@
     <div class="logo">Chuchu</div>
     <nav>
       <ul>
-        <!-- removed leading / -->
         <li><a class="active" href="index.html">Home</a></li>
         <li><a href="html/shop.html">Shop</a></li>
         <li><a href="html/blog.html">Blog</a></li>
         <li><a href="html/about.html">About</a></li>
         <li><a href="html/contact.html">Contact</a></li>
+
         <li id="authLink"><a href="html/login.html">Login</a></li>
 
         <li>
-          <a href="html/cart.html">
+          <a href="html/cart.html" class="cart-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none"
                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="9" cy="21" r="1.4"></circle>
               <circle cx="20" cy="21" r="1.4"></circle>
               <path d="M1 1h4l2.4 12h13.6l2-8H6"></path>
             </svg>
+            <!-- optional cart badge -->
+            <span class="cart-count"></span>
           </a>
         </li>
-
       </ul>
     </nav>
   </header>
+
+  <!-- USER SIDE PANEL (hidden by default, shown after clicking profile icon) -->
+  <div id="userPanelOverlay" class="user-panel-overlay">
+    <aside class="user-panel">
+      <div class="user-panel-menu">
+        <!-- PROFILE -->
+        <button id="panelProfile" class="user-panel-item" type="button">
+          <span class="user-panel-icon">
+            <!-- simple user icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 20c0-4 3-7 8-7s8 3 8 7"></path>
+            </svg>
+          </span>
+          <span class="user-panel-label">Profile</span>
+        </button>
+
+        <!-- ORDERS -->
+        <button id="panelOrders" class="user-panel-item" type="button">
+          <span class="user-panel-icon">
+            <!-- box icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M3 7l9-4 9 4-9 4-9-4z"></path>
+              <path d="M3 7v10l9 4 9-4V7"></path>
+              <path d="M12 11v10"></path>
+            </svg>
+          </span>
+          <span class="user-panel-label">Orders</span>
+        </button>
+      </div>
+
+      <!-- LOGOUT AT BOTTOM -->
+      <button id="panelLogoutBtn" class="user-panel-logout" type="button">
+        <span>Logout</span>
+        <span class="logout-arrow-box">
+          <!-- arrow icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M5 12h11"></path>
+            <path d="M12 5l7 7-7 7"></path>
+          </svg>
+        </span>
+      </button>
+    </aside>
+  </div>
 
   <!-- HERO SECTION -->
   <section class="hero">
@@ -50,8 +95,7 @@
       <a href="html/shop.html" class="btn">Shop Now</a>
     </div>
 
-    <!-- removed leading / -->
-    <img src="img/homie.png" class="hero-img">
+    <img src="img/homie.png" class="hero-img" />
   </section>
 
   <!-- FEATURES / CATEGORIES -->
@@ -86,8 +130,8 @@
   </section>
 
   <section class="product-grid" id="featuredProducts"></section>
+  
 
-  <!-- this one was already relative - good -->
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

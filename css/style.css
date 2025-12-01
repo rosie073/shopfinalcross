@@ -811,6 +811,140 @@ nav a:hover {
   max-width: 480px;
 }
 
+
+
+
+
+
+/* ===================== */
+/* PROFILE ICON (NAVBAR) */
+/* ===================== */
+
+.profile-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.profile-btn svg {
+  width: 26px;
+  height: 26px;
+  stroke: #000;
+  fill: none;
+  stroke-width: 1.6;
+}
+
+/* ========================= */
+/* LEFT USER PANEL / DRAWER  */
+/* ========================= */
+
+.user-panel-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;              /* hidden by default */
+  z-index: 999;
+  background: transparent;    /* no dark overlay, like your screenshot */
+}
+
+.user-panel-overlay.open {
+  display: block;
+}
+
+.user-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  background: #ffffff;
+  box-shadow: 4px 0 18px rgba(0, 0, 0, 0.18);
+  padding: 40px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: inherit;
+}
+
+.user-panel-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;                  /* spacing between Profile / Orders */
+}
+
+.user-panel-item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.user-panel-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-panel-icon svg {
+  width: 38px;
+  height: 38px;
+  stroke: #000;
+  fill: none;
+  stroke-width: 1.7;
+}
+
+.user-panel-label {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+/* Logout at the bottom */
+
+.user-panel-logout {
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.logout-arrow-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #e4f0ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-arrow-box svg {
+  width: 24px;
+  height: 24px;
+  stroke: #2563eb;           /* nice blue arrow */
+  fill: none;
+  stroke-width: 1.7;
+}
+
+/* small screen: panel becomes narrower */
+@media (max-width: 600px) {
+  .user-panel {
+    width: 70%;
+  }
+}
+
+
+
+
+
 /* Responsive */
 
 @media (max-width: 900px) {
