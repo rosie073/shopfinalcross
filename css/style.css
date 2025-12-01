@@ -29,6 +29,29 @@ a:hover {
 
 
 
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #086d28;  /* purple */
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+
+
+
+
+
+
+
+
 /* NAVIGATION */
 .navbar {
   display: flex;
