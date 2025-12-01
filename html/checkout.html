@@ -38,11 +38,25 @@
       <label>Address</label>
       <textarea id="buyerAddress" placeholder="Complete address"></textarea>
 
-      <label>Payment Method</label>
-      <select id="paymentMethod">
-        <option value="cod">Cash on Delivery</option>
-        <option value="gcash">GCash</option>
-      </select>
+        <label>Payment Method</label>
+        <div class="payment-options">
+
+        <label class="payment-option">
+            <input type="radio" name="payment" value="cod" checked>
+            <img src="../img/cash.png" alt="COD">
+            <span>Cash on Delivery</span>
+        </label>
+
+        <label class="payment-option">
+            <input type="radio" name="payment" value="gcash">
+            <img src="../img/gcash.png" alt="GCash">
+            <span>GCash</span>
+        </label>
+
+        </div>
+
+        <p id="errorMessage" class="checkout-error"></p>
+
     </div>
 
     <!-- RIGHT SIDE: Order Summary -->
@@ -56,6 +70,25 @@
 
   </div>
 </section>
+
+
+
+
+        <!-- SUCCESS MODAL -->
+        <div id="orderSuccessModal" class="success-modal">
+        <div class="success-box">
+            <h2>🎉 Order Placed Successfully!</h2>
+
+            <p><strong>Name:</strong> <span id="orderName"></span></p>
+            <p><strong>Phone:</strong> <span id="orderPhone"></span></p>
+            <p><strong>Address:</strong> <span id="orderAddress"></span></p>
+            <p><strong>Payment:</strong> <span id="orderPayment"></span></p>
+            <p><strong>Total:</strong> $<span id="orderTotal"></span></p>
+
+            <button id="modalCloseBtn">Continue Shopping</button>
+        </div>
+        </div>
+
 
 <script type="module" src="../js/checkout.js"></script>
 </body>

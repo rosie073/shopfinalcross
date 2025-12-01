@@ -838,6 +838,280 @@ nav a:hover {
   stroke-width: 1.6;
 }
 
+
+
+
+
+
+
+/* -------------------------
+   CHECKOUT PAGE STYLING
+------------------------- */
+
+.checkout-section {
+  width: 100%;
+  padding: 60px 5%;
+  background: #f9f9f9;
+}
+
+.checkout-section h1 {
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 1px;
+}
+
+.checkout-container {
+  display: flex;
+  gap: 40px;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* -------------------------
+   LEFT SIDE: FORM
+------------------------- */
+
+.checkout-info {
+  background: #fff;
+  padding: 30px;
+  width: 55%;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.checkout-info h3 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+
+.checkout-info label {
+  display: block;
+  margin-top: 15px;
+  font-size: 15px;
+  color: #444;
+  font-weight: 600;
+}
+
+.checkout-info input,
+.checkout-info textarea,
+.checkout-info select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.checkout-info input:focus,
+.checkout-info textarea:focus,
+.checkout-info select:focus {
+  border-color: #15c6a4;
+  box-shadow: 0 0 0 2px rgba(21,198,164,0.2);
+}
+
+.checkout-info textarea {
+  resize: none;
+  height: 100px;
+}
+
+/* -------------------------
+   RIGHT SIDE: SUMMARY
+------------------------- */
+
+.checkout-summary {
+  background: #fff;
+  padding: 30px;
+  width: 40%;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 30px;
+}
+
+.checkout-summary h3 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+
+#summaryTotals p {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
+  font-size: 16px;
+}
+
+#summaryTotals hr {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+/* -------------------------
+   BUTTON
+------------------------- */
+
+.checkout-btn {
+  width: 100%;
+  background: #14c7a6;
+  color: white;
+  padding: 14px 0;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: 0.2s;
+}
+
+.checkout-btn:hover {
+  background: #0fa98c;
+  transform: translateY(-2px);
+}
+
+/* -------------------------
+   RESPONSIVE DESIGN
+------------------------- */
+
+@media (max-width: 900px) {
+  .checkout-container {
+    flex-direction: column;
+  }
+
+  .checkout-info,
+  .checkout-summary {
+    width: 100%;
+  }
+
+  .checkout-summary {
+    position: relative;
+    top: 0;
+  }
+}
+
+
+
+/* -------------------------
+   PAYMENT METHOD
+------------------------- */
+
+.payment-options {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+.payment-option:hover {
+  border-color: #14c7a6;
+  background: #f0fffc;
+}
+
+.payment-option input {
+  transform: scale(1.3);
+}
+
+.payment-option img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.checkout-error {
+  margin-top: 15px;
+  color: #d9534f;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+
+/* -------------------------
+   SUCCESS MODAL
+------------------------- */
+.success-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(3px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.success-box {
+  background: white;
+  width: 400px;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0px 8px 25px rgba(0,0,0,0.15);
+  animation: popIn 0.25s ease-out;
+}
+
+.success-box h2 {
+  color: #14c7a6;
+  margin-bottom: 20px;
+}
+
+.success-box p {
+  text-align: left;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.success-box button {
+  width: 100%;
+  background: #14c7a6;
+  border: none;
+  padding: 12px;
+  margin-top: 20px;
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.success-box button:hover {
+  background: #0fa98c;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+
+
+
+
+
+
 /* ========================= */
 /* LEFT USER PANEL / DRAWER  */
 /* ========================= */

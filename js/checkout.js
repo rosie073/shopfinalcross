@@ -20,27 +20,49 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
 
   // Place Order
-  document.getElementById("placeOrderBtn").addEventListener("click", async () => {
-    const name = document.getElementById("buyerName").value.trim();
-    const phone = document.getElementById("buyerPhone").value.trim();
-    const address = document.getElementById("buyerAddress").value.trim();
-    const payment = document.getElementById("paymentMethod").value;
+document.getElementById("placeOrderBtn").addEventListener("click", async () => {
 
-    if (!name || !phone || !address) {
-      alert("Please complete your information.");
-      return;
-    }
+  const name = document.getElementById("buyerName").value.trim();
+  const phone = document.getElementById("buyerPhone").value.trim();
+  const address = document.getElementById("buyerAddress").value.trim();
+  const payment = document.querySelector("input[name='payment']:checked")?.value;
 
-    alert(`
-Order placed successfully!
+  const errorBox = document.getElementById("errorMessage");
+  errorBox.textContent = "";
 
-Name: ${name}
-Phone: ${phone}
-Address: ${address}
-Payment: ${payment === "cod" ? "Cash on Delivery" : "GCash"}
-Total: $${total.toFixed(2)}
-    `);
+  // Validation
+  if (!name) {
+    errorBox.textContent = "Please enter your full name.";
+    return;
+  }
+  if (!phone || !/^09\d{9}$/.test(phone)) {
+    errorBox.textContent = "Enter a valid phone number (Example: 09123456789).";
+    return;
+  }
+  if (!address || address.length < 10) {
+    errorBox.textContent = "Please enter your complete address.";
+    return;
+  }
+  if (!payment) {
+    errorBox.textContent = "Please select a payment method.";
+    return;
+  }
 
-    // TODO: Save order to DB if needed
-  });
+  // Display modal
+  document.getElementById("orderName").textContent = name;
+  document.getElementById("orderPhone").textContent = phone;
+  document.getElementById("orderAddress").textContent = address;
+  document.getElementById("orderPayment").textContent =
+    payment === "cod" ? "Cash on Delivery" : "GCash";
+  document.getElementById("orderTotal").textContent = total.toFixed(2);
+
+  document.getElementById("orderSuccessModal").style.display = "flex";
+});
+
+// Close modal
+document.getElementById("modalCloseBtn").addEventListener("click", () => {
+  window.location.href = "shop.html"; // Redirect to shop
+});
+
+
 });
