@@ -726,7 +726,7 @@ nav a:hover {
   color: #111;
 }
 
-#cart-btn {
+.cart-btn {
   width: 38px;
   height: 38px;
   border-radius: 50%;

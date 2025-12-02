@@ -73,6 +73,11 @@ const Cart = (() => {
     return isInHtml ? "login.html" : "html/login.html";
   };
 
+  const getCheckoutPath = () => {
+    const isInHtml = window.location.pathname.includes("/html/");
+    return isInHtml ? "checkout.html" : "html/checkout.html";
+  };
+
   const redirectToLogin = () => {
     const loginPath = getLoginPath();
     // small delay so alert can show
@@ -82,13 +87,12 @@ const Cart = (() => {
   // --- Public Methods ---
 
   const addItem = async (productId, qty = 1) => {
-    if (!currentUser) {
-      notify("Login required", "Please login to add items to your cart.", "warning");
-      redirectToLogin();
-      return false;
-    }
-
     try {
+      // If we're not logged in, make sure we merge any existing local cart first
+      if (!currentUser && currentCart.length === 0) {
+        currentCart = getLocalCart();
+      }
+
       const normalizedId = normalizeId(productId);
       const allProducts = await ProductModel.getProducts();
       const product = allProducts.find(p => normalizeId(p.id) === normalizedId);
@@ -323,7 +327,14 @@ const updateTotalsUI = () => {
     if (checkoutBtn) {
       checkoutBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        checkout();
+
+        if (!currentCart.length) {
+          notify("Cart is empty", "Add items before checking out.", "warning");
+          return;
+        }
+
+        updateTotalsUI(); // persist latest totals for the checkout page
+        window.location.href = getCheckoutPath();
       });
     }
 

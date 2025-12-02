@@ -28,7 +28,7 @@ export const ProductView = {
             <div class="product-bottom">
               <span class="product-price">$${p.price}</span>
 
-              <button ${addToCartId} id="cart-btn" class="product-cart-btn" data-id="${p.id}" aria-label="Add ${p.name} to cart">
+              <button ${addToCartId} id="cart-btn" class="product-cart-btn cart-btn" data-id="${p.id}" aria-label="Add ${p.name} to cart">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="8" cy="17" r="1.2"></circle>
