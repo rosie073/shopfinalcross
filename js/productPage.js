@@ -6,10 +6,14 @@ const ProductPageController = (() => {
   const loadProduct = async () => {
     const params = new URLSearchParams(window.location.search);
     const idParam = params.get("id");
-    const id = Number(idParam);
+    if (!idParam) {
+      const wrapper = document.getElementById("productDetails");
+      if (wrapper) wrapper.innerHTML = "<p>Product not found.</p>";
+      return;
+    }
 
     const allProducts = await ProductModel.getProducts();
-    const product = allProducts.find((p) => Number(p.id) === id);
+    const product = allProducts.find((p) => String(p.id) === idParam || Number(p.id) === Number(idParam));
 
     const wrapper = document.getElementById("productDetails");
     if (!product) {
@@ -21,6 +25,8 @@ const ProductPageController = (() => {
     const nameEl = document.getElementById("productName");
     const priceEl = document.getElementById("productPrice");
     const descEl = document.getElementById("productDescription");
+    const addBtn = document.getElementById("addToCartBtn");
+    const qtyInput = document.getElementById("productQty");
 
     // Fix GitHub Pages path
     const prefix = window.location.pathname.includes("/html/") ? "../" : "";
@@ -34,6 +40,18 @@ const ProductPageController = (() => {
     if (nameEl) nameEl.textContent = product.name;
     if (priceEl) priceEl.textContent = `$${Number(product.price).toFixed(2)}`;
     if (descEl) descEl.textContent = product.description || "Nice and comfy shirt.";
+    if (addBtn) {
+      addBtn.dataset.id = product.id;
+      addBtn.classList.add("product-cart-btn");
+      if (qtyInput) {
+        const setQty = () => {
+          const parsed = Number(qtyInput.value);
+          addBtn.dataset.qty = Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+        };
+        setQty();
+        qtyInput.addEventListener("input", setQty);
+      }
+    }
 
     // -------------------------------
     // 🔥 REMOVE THUMBNAILS unless a real gallery exists

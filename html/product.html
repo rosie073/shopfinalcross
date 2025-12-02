@@ -25,13 +25,14 @@
         <li id="authLink"><a href="login.html">Login</a></li>
 
         <li>
-          <a href="cart.html">
+          <a href="cart.html" class="cart-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none"
                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="9" cy="21" r="1.4"></circle>
               <circle cx="20" cy="21" r="1.4"></circle>
               <path d="M1 1h4l2.4 12h13.6l2-8H6"></path>
             </svg>
+            <span class="cart-count"></span>
           </a>
         </li>
       </ul>
@@ -65,7 +66,7 @@
 
       <div class="single-product-actions">
         <input type="number" id="productQty" value="1" min="1">
-        <button id="addToCartBtn" class="btn">Add To Cart</button>
+        <button type="button" id="addToCartBtn" class="btn">Add To Cart</button>
       </div>
 
       <h3>Product Details</h3>
@@ -76,6 +77,7 @@
       
 
   <!-- JS modules -->
+  <script type="module" src="../js/spa-router.js"></script>
   <script type="module" src="../js/shop.js"></script>
   <script type="module" src="../js/cart.js"></script>
   <script type="module" src="../js/productPage.js"></script>

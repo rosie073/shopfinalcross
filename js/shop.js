@@ -6,6 +6,7 @@ const ShopController = (() => {
   let currentPage = 1;
   const itemsPerPage = 10;
   let totalPages = 1;
+  let hasLoggedSeedInfo = false;
 
   
 const renderPage = async () => {
@@ -14,6 +15,11 @@ const renderPage = async () => {
   if (!Array.isArray(allProducts)) {
     console.error("getProducts() did not return an array:", allProducts);
     return;
+  }
+
+  if (!hasLoggedSeedInfo && ProductModel.isUsingSeedData && ProductModel.isUsingSeedData()) {
+    console.info("[Shop] Rendering seeded products (no live products found).");
+    hasLoggedSeedInfo = true;
   }
 
   totalPages = Math.max(1, Math.ceil(allProducts.length / itemsPerPage));

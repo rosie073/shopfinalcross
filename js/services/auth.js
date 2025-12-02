@@ -7,6 +7,8 @@ import {
 import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/app.js";
 
+let adminFallbackLogged = false;
+
 export const AuthService = {
   signUp: async (email, password) => {
     let userCredential;
@@ -66,7 +68,10 @@ export const AuthService = {
         const adminDoc = await getDoc(doc(db, "admin", user.uid));
         if (adminDoc.exists() && adminDoc.data().isAdmin === true) return true;
       } catch (e) {
-        console.warn("Admin collection read blocked; falling back to users collection.");
+        if (!adminFallbackLogged) {
+          console.warn("Admin collection read blocked; falling back to users collection.", e);
+          adminFallbackLogged = true;
+        }
       }
 
       // Fallback to users/{uid} -> { isAdmin: true }

@@ -137,10 +137,11 @@ export const DBService = {
     try {
       await setDoc(doc(db, CARTS_COLLECTION, userId), {
         items: cartItems,
-        updatedAt: new Date()
+        updatedAt: serverTimestamp()
       });
     } catch (e) {
       console.error("Error saving cart: ", e);
+      throw e;
     }
   },
 
@@ -156,6 +157,44 @@ export const DBService = {
     } catch (e) {
       console.error("Error loading cart: ", e);
       return [];
+    }
+  },
+
+  // --- Orders ---
+
+  // Create an order from the current cart
+  createOrder: async (userId, items = [], totals = {}, meta = {}) => {
+    if (!userId) throw new Error("Missing userId for order creation");
+
+    const subtotalFromItems = Array.isArray(items)
+      ? items.reduce((sum, item) => {
+          const price = Number(item.price) || 0;
+          const qty = Number(item.qty) || 0;
+          return sum + price * qty;
+        }, 0)
+      : 0;
+
+    const subtotal = Number.isFinite(totals.subtotal) ? totals.subtotal : subtotalFromItems;
+    const total = Number.isFinite(totals.total) ? totals.total : subtotalFromItems;
+
+    const payload = {
+      userId,
+      items,
+      subtotal,
+      total,
+      status: "pending",
+      createdAt: serverTimestamp(),
+      ...meta
+    };
+
+    try {
+      // Store orders under user document to match security rules
+      const ordersRef = collection(db, "users", userId, "orders");
+      const docRef = await addDoc(ordersRef, payload);
+      return { id: docRef.id, ...payload };
+    } catch (e) {
+      console.error("Error creating order: ", e);
+      throw e;
     }
   }
 };

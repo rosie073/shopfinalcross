@@ -10,6 +10,7 @@ export const ProductView = {
     // if URL contains /html/, we’re on shop/product/cart pages
     const needsParent = window.location.pathname.includes("/html/");
     const prefix = needsParent ? "../" : "";
+    const addToCartId = containerID === "shopProducts" ? 'id="product-cart-btn"' : "";
 
     list.forEach(p => {
       const isRemoteImg = /^https?:\/\//i.test(p.img);
@@ -27,7 +28,7 @@ export const ProductView = {
             <div class="product-bottom">
               <span class="product-price">$${p.price}</span>
 
-              <button class="product-cart-btn" data-id="${p.id}" aria-label="Add ${p.name} to cart">
+              <button ${addToCartId} id="cart-btn" class="product-cart-btn" data-id="${p.id}" aria-label="Add ${p.name} to cart">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="8" cy="17" r="1.2"></circle>
@@ -40,5 +41,12 @@ export const ProductView = {
         </a>
       `;
     });
+
+    // Ensure the id attribute is present on shop buttons even if template rendering was skipped/cached
+    if (containerID === "shopProducts") {
+      container.querySelectorAll(".product-cart-btn").forEach((btn) => {
+        btn.id = "product-cart-btn";
+      });
+    }
   }
 };

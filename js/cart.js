@@ -6,6 +6,16 @@ import { DBService } from "./services/db.js";
 const CART_KEY = "chuchu_cart";
 let currentUser = null;
 let currentCart = []; // In-memory cart state
+const normalizeId = (id) => String(id);
+const notify = (title, text = "", icon = "info") => {
+  if (window.Swal?.fire) {
+    return window.Swal.fire({ title, text, icon, timer: 1600, showConfirmButton: false });
+  }
+  if (typeof window.swal === "function") {
+    return window.swal(title, text, icon);
+  }
+  alert(text ? `${title}: ${text}` : title);
+};
 
 const Cart = (() => {
 
@@ -24,64 +34,106 @@ const Cart = (() => {
   };
 
   const syncCart = async () => {
-    if (currentUser) {
-      // Save to DB
-      await DBService.saveUserCart(currentUser.uid, currentCart);
-    } else {
-      // Save to LocalStorage
-      saveLocalCart(currentCart);
+    try {
+      if (currentUser) {
+        // Save to DB
+        await DBService.saveUserCart(currentUser.uid, currentCart);
+      } else {
+        // Save to LocalStorage
+        saveLocalCart(currentCart);
+      }
+    } catch (e) {
+      console.error("Failed to sync cart:", e);
+      notify("Could not save cart", "Please try again.", "error");
+      throw e;
     }
   };
 
   const refreshCartFromSource = async () => {
-    if (currentUser) {
-      // Load from DB
-      currentCart = await DBService.getUserCart(currentUser.uid);
-      // Optional: Merge local cart if it exists and we just logged in?
-      // For now, simple override from DB is safer to avoid duplicates logic complexity
-    } else {
-      // Load from LocalStorage
-      currentCart = getLocalCart();
+    try {
+      if (currentUser) {
+        // Load from DB
+        currentCart = await DBService.getUserCart(currentUser.uid);
+        // Optional: Merge local cart if it exists and we just logged in?
+        // For now, simple override from DB is safer to avoid duplicates logic complexity
+      } else {
+        // Load from LocalStorage
+        currentCart = getLocalCart();
+      }
+    } catch (e) {
+      console.error("Failed to load cart:", e);
+      notify("Could not load cart", "Please try again.", "error");
     }
     renderCartPage();
     updateCartCountUI();
+  };
+
+  const getLoginPath = () => {
+    const isInHtml = window.location.pathname.includes("/html/");
+    return isInHtml ? "login.html" : "html/login.html";
+  };
+
+  const redirectToLogin = () => {
+    const loginPath = getLoginPath();
+    // small delay so alert can show
+    setTimeout(() => { window.location.href = loginPath; }, 600);
   };
 
   // --- Public Methods ---
 
   const addItem = async (productId, qty = 1) => {
-    const allProducts = await ProductModel.getProducts();
-    const product = allProducts.find(p => p.id === productId);
-    if (!product) return;
-
-    const existing = currentCart.find(i => i.id === productId);
-
-    if (existing) {
-      existing.qty += qty;
-    } else {
-      currentCart.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        img: product.img,
-        qty
-      });
+    if (!currentUser) {
+      notify("Login required", "Please login to add items to your cart.", "warning");
+      redirectToLogin();
+      return false;
     }
 
-    await syncCart();
-    renderCartPage();
-    updateCartCountUI();
+    try {
+      const normalizedId = normalizeId(productId);
+      const allProducts = await ProductModel.getProducts();
+      const product = allProducts.find(p => normalizeId(p.id) === normalizedId);
+      if (!product) {
+        notify("Add to cart failed", "Product not found.", "error");
+        return false;
+      }
+
+      const existing = currentCart.find(i => normalizeId(i.id) === normalizedId);
+
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        currentCart.push({
+          id: normalizedId,
+          name: product.name,
+          price: product.price,
+          img: product.img,
+          qty
+        });
+      }
+
+      await syncCart();
+      renderCartPage();
+      updateCartCountUI();
+      notify("Added to cart", product.name, "success");
+      return true;
+    } catch (e) {
+      console.error("Add to cart failed", e);
+      notify("Add to cart failed", "Please try again.", "error");
+      return false;
+    }
   };
 
   const removeItem = async (productId) => {
-    currentCart = currentCart.filter(i => i.id !== productId);
+    const normalizedId = normalizeId(productId);
+    currentCart = currentCart.filter(i => normalizeId(i.id) !== normalizedId);
     await syncCart();
     renderCartPage();
     updateCartCountUI();
   };
 
   const updateQty = async (productId, qty) => {
-    const item = currentCart.find(i => i.id === productId);
+    const normalizedId = normalizeId(productId);
+    const item = currentCart.find(i => normalizeId(i.id) === normalizedId);
     if (!item) return;
 
     const safeQty = qty <= 0 || Number.isNaN(qty) ? 1 : qty;
@@ -132,14 +184,66 @@ const applyCoupon = (code) => {
 };
 
 
+  const updateCheckoutButtonState = () => {
+    const checkoutBtn = document.querySelector(".checkout-btn");
+    if (!checkoutBtn) return;
+
+    const hasItems = currentCart.length > 0;
+    checkoutBtn.disabled = !hasItems;
+    checkoutBtn.classList.toggle("is-disabled", !hasItems);
+  };
+
   const updateCartCountUI = () => {
-    const badge = document.querySelector(".cart-count");
-    if (!badge) return;
+    const badges = document.querySelectorAll(".cart-count");
+    if (!badges.length) return;
 
     const count = currentCart.reduce((sum, i) => sum + i.qty, 0);
 
-    badge.textContent = count;
-    badge.style.display = count ? "inline-flex" : "none";
+    badges.forEach((badge) => {
+      badge.textContent = count;
+      badge.style.display = count ? "inline-flex" : "none";
+      const link = badge.closest(".cart-link");
+      if (link) {
+        link.classList.toggle("has-items", !!count);
+      }
+    });
+  };
+
+  const checkout = async () => {
+    if (!currentCart.length) {
+      notify("Cart is empty", "Add items before checking out.", "warning");
+      return;
+    }
+
+    if (!currentUser) {
+      notify("Login required", "Please login to complete your purchase.", "warning");
+      redirectToLogin();
+      return;
+    }
+
+    const checkoutBtn = document.querySelector(".checkout-btn");
+    if (checkoutBtn) checkoutBtn.disabled = true;
+
+    try {
+      const totals = getTotals();
+      const order = await DBService.createOrder(currentUser.uid, currentCart, totals, {
+        email: currentUser.email || null
+      });
+
+      currentCart = [];
+      await syncCart();
+      renderCartPage();
+      updateCartCountUI();
+
+      const orderId = order?.id ? String(order.id) : "";
+      const orderLabel = orderId ? `Order ${orderId.slice(0, 8)}` : "Order placed";
+      notify(orderLabel, "Your order has been saved.", "success");
+    } catch (e) {
+      console.error("Checkout failed", e);
+      notify("Checkout failed", "Please try again.", "error");
+    } finally {
+      updateCheckoutButtonState();
+    }
   };
 
   // Listen for "Add to Cart" click anywhere
@@ -152,10 +256,13 @@ const applyCoupon = (code) => {
       e.preventDefault();
       e.stopPropagation();
 
-      const id = Number(btn.dataset.id);
+      const id = btn.dataset.id;
       if (!id) return;
 
-      addItem(id, 1);
+      const qtyAttr = Number(btn.dataset.qty);
+      const qty = Number.isFinite(qtyAttr) && qtyAttr > 0 ? qtyAttr : 1;
+
+      addItem(id, qty);
     });
   };
 
@@ -195,6 +302,7 @@ const applyCoupon = (code) => {
     }
 
     updateTotalsUI();
+    updateCheckoutButtonState();
   };
 
 const updateTotalsUI = () => {
@@ -210,11 +318,20 @@ const updateTotalsUI = () => {
 
 
   const bindCartPageEvents = () => {
+    // checkout
+    const checkoutBtn = document.querySelector(".checkout-btn");
+    if (checkoutBtn) {
+      checkoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        checkout();
+      });
+    }
+
     // remove item
     document.addEventListener("click", (e) => {
       const removeBtn = e.target.closest(".remove");
       if (removeBtn && removeBtn.dataset.id) {
-        const id = Number(removeBtn.dataset.id);
+        const id = removeBtn.dataset.id;
         removeItem(id);
       }
     });
@@ -223,7 +340,7 @@ const updateTotalsUI = () => {
     document.addEventListener("change", (e) => {
       const input = e.target.closest(".cart-qty");
       if (input && input.dataset.id) {
-        const id = Number(input.dataset.id);
+        const id = input.dataset.id;
         const qty = Number(input.value);
         updateQty(id, qty);
       }
@@ -233,6 +350,7 @@ const updateTotalsUI = () => {
   const init = () => {
     handleAddToCartClicks(); // works on all pages
     bindCartPageEvents();    // only does anything on cart page
+    updateCheckoutButtonState();
 
     // Auth Listener to switch cart sources
     AuthService.observeAuth(async (user) => {
