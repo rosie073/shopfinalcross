@@ -8,13 +8,18 @@ import {
   updateDoc,
   deleteDoc,
   writeBatch,
-  serverTimestamp
+  serverTimestamp,
+  query,
+  where,
+  orderBy,
+  collectionGroup
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase/app.js";
 
 const PRODUCTS_COLLECTION = "products";
 const CARTS_COLLECTION = "carts";
+const ORDERS_COLLECTION = "orders";
 
 const toMillis = (value) => {
   if (!value) return 0;
@@ -181,6 +186,7 @@ export const DBService = {
       userId,
       items,
       subtotal,
+      discount: Number.isFinite(totals.discount) ? totals.discount : 0,
       total,
       status: "pending",
       createdAt: serverTimestamp(),
@@ -188,12 +194,84 @@ export const DBService = {
     };
 
     try {
-      // Store orders under user document to match security rules
-      const ordersRef = collection(db, "users", userId, "orders");
+      // Store orders in a top-level collection for easier admin querying
+      const ordersRef = collection(db, ORDERS_COLLECTION);
       const docRef = await addDoc(ordersRef, payload);
       return { id: docRef.id, ...payload };
     } catch (e) {
       console.error("Error creating order: ", e);
+      throw e;
+    }
+  },
+
+  getUserOrders: async (userId) => {
+    if (!userId) return [];
+    try {
+      const ordersRef = collection(db, ORDERS_COLLECTION);
+      const q = query(ordersRef, where("userId", "==", userId), orderBy("createdAt", "desc"));
+      const legacyRef = collection(db, "users", userId, "orders"); // pre-migration location
+
+      const [topSnapshot, legacySnapshot] = await Promise.all([
+        getDocs(q),
+        getDocs(legacyRef).catch(() => null)
+      ]);
+
+      const topOrders = topSnapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
+      const legacyOrders = legacySnapshot
+        ? legacySnapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+        : [];
+
+      const combined = [...topOrders, ...legacyOrders];
+      combined.sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
+      return combined;
+    } catch (e) {
+      console.error("Error fetching user orders:", e);
+      return [];
+    }
+  },
+
+  getAllOrders: async () => {
+    try {
+      const topOrdersSnap = await getDocs(collection(db, ORDERS_COLLECTION));
+      const legacyOrdersSnap = await getDocs(collectionGroup(db, "orders")).catch(() => null);
+
+      const topOrders = topOrdersSnap.docs.map((docSnap) => ({
+        id: docSnap.id,
+        path: docSnap.ref.path,
+        ...docSnap.data()
+      }));
+
+      const legacyOrders = legacyOrdersSnap
+        ? legacyOrdersSnap.docs
+            .filter((docSnap) => docSnap.ref.path.startsWith("users/")) // skip top-level duplicates
+            .map((docSnap) => ({
+              id: docSnap.id,
+              path: docSnap.ref.path,
+              ...docSnap.data()
+            }))
+        : [];
+
+      const combined = [...topOrders, ...legacyOrders];
+      combined.sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
+      return combined;
+    } catch (e) {
+      console.error("Error fetching all orders:", e);
+      return [];
+    }
+  },
+
+  updateOrderStatus: async (orderPath, status) => {
+    if (!orderPath || !status) return false;
+    try {
+      const segments = orderPath.split("/").filter(Boolean);
+      const orderRef = doc(db, ...segments);
+      await updateDoc(orderRef, {
+        status,
+        updatedAt: serverTimestamp()
+      });
+      return true;
+    } catch (e) {
+      console.error("Error updating order status:", e);
       throw e;
     }
   }

@@ -3,25 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chuchu Shop</title>
-
-  <!-- Correct path -->
+  <title>Admin Orders — Chuchu</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
-
 <body>
 
-<!-- NAVIGATION -->
 <header class="navbar">
-    <div class="logo">
+  <div class="logo">
     <img src="../img/logo.png" alt="logo" class="logo-icon">
     <span>Chuchu</span>
-    </div>
-
+  </div>
   <nav>
     <ul>
       <li><a href="../index.html">Home</a></li>
-      <li><a class="active" href="shop.html">Shop</a></li>
+      <li><a href="shop.html">Shop</a></li>
       <li><a href="blog.html">Blog</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
@@ -41,26 +36,43 @@
   </nav>
 </header>
 
-<!-- SHOP BANNER -->
-<section class="shop-banner">
-  <h1>#stayhome</h1>
-  <p>Save more with coupons &amp; up to 70% off!</p>
+<section class="orders-hero">
+  <div>
+    <h1>Admin · Orders</h1>
+    <p>Review and manage every order across the store.</p>
+  </div>
+  <button id="refreshOrdersBtn" class="btn">Refresh</button>
 </section>
 
-<!-- PRODUCT GRID -->
-<section class="product-grid" id="shopProducts"></section>
-
-<!-- PAGINATION -->
-<div class="pagination">
-  <button id="page1" data-page="1" class="active">1</button>
-  <button id="page2" data-page="2">2</button>
-  <button id="nextPage">Next</button>
-</div>
+<section class="orders-page">
+  <div class="orders-column" style="grid-column: 1 / -1;">
+    <div class="orders-header">
+      <h3>All Orders</h3>
+      <span class="orders-hint">Update status to Delivered, Completed, or Cancelled</span>
+    </div>
+    <div class="orders-table-wrapper">
+      <table class="orders-table" id="adminOrdersTable">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>User</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Placed</th>
+            <th>Update</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="adminOrdersEmpty" class="orders-empty" style="display:none;">No orders yet.</div>
+  </div>
+</section>
 
 <script type="module" src="../js/spa-router.js"></script>
-<script type="module" src="../js/shop.js"></script>
 <script type="module" src="../js/cart.js"></script>
 <script type="module" src="../js/app.js"></script>
-
+<script type="module" src="../js/adminOrders.js"></script>
 </body>
 </html>

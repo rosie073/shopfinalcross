@@ -12,12 +12,23 @@ const AppController = (() => {
       const navUl = document.querySelector(".navbar nav ul");
       const isInHtmlFolder = window.location.pathname.includes("/html/");
       const loginPath = isInHtmlFolder ? "login.html" : "html/login.html";
-      const homePath = isInHtmlFolder ? "../index.html" : "index.html";
 
       // Remove existing admin link if any
       const existingAdminLink = document.getElementById("adminLink");
       if (existingAdminLink) {
         existingAdminLink.remove();
+      }
+      const existingAdminOrdersLink = document.getElementById("adminOrdersLink");
+      if (existingAdminOrdersLink) {
+        existingAdminOrdersLink.remove();
+      }
+      const existingOrdersLink = document.getElementById("ordersLink");
+      if (existingOrdersLink) {
+        existingOrdersLink.remove();
+      }
+      const ordersPlaceholder = document.getElementById("ordersNavPlaceholder");
+      if (ordersPlaceholder) {
+        ordersPlaceholder.remove();
       }
 
       if (authLink) {
@@ -25,8 +36,11 @@ const AppController = (() => {
           authLink.innerHTML = `<a href="#" id="logoutBtn">Logout (${user.email})</a>`;
           document.getElementById("logoutBtn").addEventListener("click", async (e) => {
             e.preventDefault();
-            await AuthService.logout();
-            window.location.href = homePath; // keep URL clean (no /html/login.html)
+            const { error } = await AuthService.logout();
+            if (error) {
+              console.error("Logout failed:", error);
+            }
+            window.location.href = loginPath;
           });
 
           // Check if admin
@@ -41,6 +55,25 @@ const AppController = (() => {
             adminLi.innerHTML = `<a href="${adminPath}">Admin</a>`;
             // Insert before the auth link or at the end
             navUl.insertBefore(adminLi, authLink);
+
+            const adminOrdersLi = document.createElement("li");
+            adminOrdersLi.id = "adminOrdersLink";
+            const adminOrdersPath = isInHtmlFolder ? "admin-orders.html" : "html/admin-orders.html";
+            adminOrdersLi.innerHTML = `<a href="${adminOrdersPath}">Orders</a>`;
+            navUl.insertBefore(adminOrdersLi, authLink);
+          }
+
+          // Orders link for logged-in users
+          if (navUl && !isAdmin) {
+            const ordersLi = document.createElement("li");
+            ordersLi.id = "ordersLink";
+            const ordersPath = isInHtmlFolder ? "orders.html" : "html/orders.html";
+            ordersLi.innerHTML = `<a href="${ordersPath}">Orders</a>`;
+            if (authLink.parentElement === navUl) {
+              navUl.insertBefore(ordersLi, authLink);
+            } else {
+              navUl.appendChild(ordersLi);
+            }
           }
 
         } else {
