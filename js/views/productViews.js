@@ -48,5 +48,10 @@ export const ProductView = {
         btn.id = "product-cart-btn";
       });
     }
+
+    // If admin is detected, re-apply disabled state after render
+    if (window.isAdminUser && typeof window.updateAdminCartButtons === "function") {
+      window.updateAdminCartButtons(true);
+    }
   }
 };

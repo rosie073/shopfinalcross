@@ -33,6 +33,15 @@ const isSeedProduct = (product = {}) => {
   );
 };
 
+const normalizeProductRecord = (product = {}) => {
+  const rawFlag = product.isFeatured ?? product.is_featured ?? product.isfeatured;
+  const isFeatured = rawFlag === true || rawFlag === "true" || rawFlag === 1 || rawFlag === "1";
+  return {
+    ...product,
+    isFeatured
+  };
+};
+
 const filterOutSeedsWhenLiveExist = (products = []) => {
   const nonSeed = products.filter(p => !isSeedProduct(p));
   // If any real products exist, only return them; otherwise keep whatever is there
@@ -47,7 +56,8 @@ export const ProductModel = {
 
   getFeatured: async () => {
     const all = await ProductModel.getProducts();
-    return all.slice(4, 12);
+    const featured = all.filter(p => p.isFeatured);
+    return featured.length ? featured : all.slice(4, 12);
   },
 
   getProducts: async () => {
@@ -59,7 +69,7 @@ export const ProductModel = {
       if (Array.isArray(filtered) && filtered.length > 0) {
         hasLiveData = true;
         usingSeedData = false;
-        cachedProducts = filtered;
+        cachedProducts = filtered.map(normalizeProductRecord);
         return cachedProducts;
       }
       console.warn("Products collection empty; using local seed data.");
@@ -68,7 +78,7 @@ export const ProductModel = {
     }
 
     // If we reach here, no live data yet; fall back to seeds
-    cachedProducts = getSeedCopy();
+    cachedProducts = getSeedCopy().map(normalizeProductRecord);
     usingSeedData = true;
     return cachedProducts;
   },

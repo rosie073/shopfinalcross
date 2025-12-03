@@ -19,6 +19,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log("[checkout] Loaded checkout_data from localStorage:", checkoutData);
 
+  const showAlert = (title, text = "", icon = "warning") => {
+    if (window.Swal?.fire) {
+      window.Swal.fire({ title, text, icon });
+    } else if (typeof window.swal === "function") {
+      window.swal(title, text, icon);
+    } else {
+      alert(text ? `${title}: ${text}` : title);
+    }
+  };
+
+  const showAdminBlocked = () => {
+    showAlert("Admins cannot place orders", "Switch to a customer account to checkout.");
+  };
+
   const getTotals = () => {
     const subtotal =
       Number(checkoutData.subtotal) ||
@@ -69,31 +83,54 @@ document.addEventListener("DOMContentLoaded", () => {
   renderSummary();
 
   const validateForm = () => {
-    const name = document.getElementById("buyerName").value.trim();
-    const phone = document.getElementById("buyerPhone").value.trim();
-    const address = document.getElementById("buyerAddress").value.trim();
-    const payment = document.querySelector("input[name='payment']:checked")?.value;
+    const nameInput = document.getElementById("buyerName");
+    const phoneInput = document.getElementById("buyerPhone");
+    const addressInput = document.getElementById("buyerAddress");
+    const paymentInput = document.querySelector("input[name='payment']:checked");
+    const name = nameInput?.value.trim() || "";
+    const phone = phoneInput?.value.trim() || "";
+    const address = addressInput?.value.trim() || "";
+    const payment = paymentInput?.value;
+
+    const clearErrors = () => {
+      [nameInput, phoneInput, addressInput].forEach((el) => el?.classList.remove("input-error"));
+    };
+
+    const flagError = (el) => {
+      if (el) {
+        el.classList.add("input-error");
+        el.focus();
+      }
+    };
 
     errorBox.textContent = "";
+    clearErrors();
 
     if (!name) {
       console.warn("[checkout] Validation failed: name missing");
       errorBox.textContent = "Please enter your full name.";
+      showAlert("Full name required");
+      flagError(nameInput);
       return null;
     }
     if (!phone || !/^09\d{9}$/.test(phone)) {
       console.warn("[checkout] Validation failed: phone invalid", phone);
       errorBox.textContent = "Enter a valid phone number (Example: 09123456789).";
+      showAlert("Invalid phone number", "Use format 09123456789");
+      flagError(phoneInput);
       return null;
     }
     if (!address || address.length < 10) {
       console.warn("[checkout] Validation failed: address too short");
       errorBox.textContent = "Please enter your complete address.";
+      showAlert("Address too short", "Please enter your complete address.");
+      flagError(addressInput);
       return null;
     }
     if (!payment) {
       console.warn("[checkout] Validation failed: payment not selected");
       errorBox.textContent = "Please select a payment method.";
+      showAlert("Select a payment method");
       return null;
     }
 
@@ -125,9 +162,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const placeOrder = async () => {
     console.log("[checkout] placeOrder clicked. User:", currentUser?.uid, "cartItems:", cartItems.length);
+    if (window.isAdminUser || document.body.classList.contains("admin-user")) {
+      console.warn("[checkout] Blocked placeOrder: admin user.");
+      showAdminBlocked();
+      return;
+    }
     if (!currentUser) {
       errorBox.textContent = "Please log in to place an order.";
       console.warn("[checkout] Blocked placeOrder: no user");
+      showAlert("Login required", "Please log in to place an order.");
       window.location.href = "login.html";
       return;
     }
@@ -138,6 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!cartItems.length) {
       errorBox.textContent = "Your cart is empty.";
       console.warn("[checkout] Blocked placeOrder: cart is empty.");
+      showAlert("Cart is empty", "Add items before checking out.");
       return;
     }
 

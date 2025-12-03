@@ -3,6 +3,21 @@ import { ProductView } from "./views/productViews.js";
 import { AuthService } from "./services/auth.js";
 
 const AppController = (() => {
+  const toggleAddToCartForAdmin = (isAdmin) => {
+    const buttons = document.querySelectorAll(".product-cart-btn");
+    buttons.forEach((btn) => {
+      btn.disabled = !!isAdmin;
+      btn.classList.toggle("is-disabled", !!isAdmin);
+      if (isAdmin) {
+        btn.setAttribute("title", "Admins cannot add items to cart");
+      } else {
+        btn.removeAttribute("title");
+      }
+    });
+  };
+  // Expose so other modules (product/shop renderers) can refresh after dynamic render
+  window.updateAdminCartButtons = toggleAddToCartForAdmin;
+
   const init = async () => {
     console.log("AppController initialized");
 
@@ -47,6 +62,9 @@ const AppController = (() => {
           const isAdmin = await AuthService.checkAdminStatus(user);
           const tokenResult = await user.getIdTokenResult(true);
           console.log(isAdmin);
+          window.isAdminUser = isAdmin;
+          document.body.classList.toggle("admin-user", !!isAdmin);
+          toggleAddToCartForAdmin(isAdmin);
           if (isAdmin && navUl) {
             const adminLi = document.createElement("li");
             adminLi.id = "adminLink";
@@ -61,6 +79,10 @@ const AppController = (() => {
             const adminOrdersPath = isInHtmlFolder ? "admin-orders.html" : "html/admin-orders.html";
             adminOrdersLi.innerHTML = `<a href="${adminOrdersPath}">Orders</a>`;
             navUl.insertBefore(adminOrdersLi, authLink);
+
+            // Hide cart nav for admins to keep their top nav focused
+            const cartLink = navUl.querySelector(".cart-link")?.closest("li");
+            if (cartLink) cartLink.remove();
           }
 
           // Orders link for logged-in users
@@ -78,6 +100,9 @@ const AppController = (() => {
 
         } else {
           authLink.innerHTML = `<a href="${loginPath}">Login</a>`;
+          window.isAdminUser = false;
+          document.body.classList.remove("admin-user");
+          toggleAddToCartForAdmin(false);
         }
       }
     });

@@ -257,6 +257,13 @@ const applyCoupon = (code) => {
       const btn = e.target.closest(".product-cart-btn");
       if (!btn) return;
 
+      if (window.isAdminUser || document.body.classList.contains("admin-user")) {
+        e.preventDefault();
+        e.stopPropagation();
+        notify("Admins cannot add to cart or place orders.", "", "warning");
+        return;
+      }
+
       // stop the <a> from navigating when clicking the button
       e.preventDefault();
       e.stopPropagation();

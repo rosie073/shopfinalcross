@@ -978,6 +978,11 @@ nav a:hover {
   box-shadow: 0 0 0 2px rgba(21,198,164,0.2);
 }
 
+.input-error {
+  border-color: #d9534f !important;
+  box-shadow: 0 0 0 2px rgba(217, 83, 79, 0.25);
+}
+
 .checkout-info textarea {
   resize: none;
   height: 100px;

@@ -51,6 +51,9 @@ const ProductPageController = (() => {
         setQty();
         qtyInput.addEventListener("input", setQty);
       }
+      if (window.isAdminUser && typeof window.updateAdminCartButtons === "function") {
+        window.updateAdminCartButtons(true);
+      }
     }
 
     // -------------------------------
