@@ -66,6 +66,7 @@ const Cart = (() => {
     }
     renderCartPage();
     updateCartCountUI();
+    updateCheckoutButtonState();
   };
 
   const getLoginPath = () => {

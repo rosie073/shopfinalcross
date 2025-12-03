@@ -60,15 +60,61 @@
             <th>Total</th>
             <th>Status</th>
             <th>Placed</th>
-            <th>Update</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
-    <div id="adminOrdersEmpty" class="orders-empty" style="display:none;">No orders yet.</div>
-  </div>
+  <div id="adminOrdersEmpty" class="orders-empty" style="display:none;">No orders yet.</div>
+</div>
 </section>
+
+<div id="orderDetailModal" class="order-modal" aria-hidden="true">
+  <div class="order-modal__content">
+    <div class="order-modal__header">
+      <div>
+        <p class="order-modal__label">Order</p>
+        <h3 id="orderModalId">#</h3>
+        <p class="order-modal__date" id="orderModalDate"></p>
+      </div>
+      <button class="order-modal__close" id="orderModalClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="order-modal__body">
+      <div class="order-modal__grid">
+        <div>
+          <h4>Customer</h4>
+          <p id="orderModalCustomer"></p>
+          <p id="orderModalEmail" class="order-modal__muted"></p>
+          <p id="orderModalPhone" class="order-modal__muted"></p>
+        </div>
+        <div>
+          <h4>Delivery</h4>
+          <p id="orderModalAddress"></p>
+          <p id="orderModalPayment" class="order-modal__muted"></p>
+        </div>
+        <div>
+          <h4>Totals</h4>
+          <p id="orderModalSubtotal"></p>
+          <p id="orderModalDiscount"></p>
+          <p id="orderModalTotal" class="order-modal__highlight"></p>
+        </div>
+      </div>
+
+      <div class="order-modal__items" id="orderModalItems"></div>
+    </div>
+    <div class="order-modal__footer">
+      <div class="order-modal__status">
+        <label for="orderModalStatus">Status</label>
+        <select id="orderModalStatus"></select>
+      </div>
+      <div class="order-modal__actions">
+        <button class="btn" id="orderModalSave">Update Status</button>
+        <button class="btn-outline" id="orderModalCloseFooter">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script type="module" src="../js/spa-router.js"></script>
 <script type="module" src="../js/cart.js"></script>

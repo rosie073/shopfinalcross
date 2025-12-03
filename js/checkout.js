@@ -7,9 +7,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const successModal = document.getElementById("orderSuccessModal");
   const placeOrderBtn = document.getElementById("placeOrderBtn");
 
+  console.log("[checkout] DOM ready. Button found:", !!placeOrderBtn);
+  if (!placeOrderBtn) {
+    console.error("[checkout] Cannot bind place order handler because button is missing.");
+    return;
+  }
+
   let checkoutData = JSON.parse(localStorage.getItem("checkout_data")) || {};
   let cartItems = [];
   let currentUser = null;
+
+  console.log("[checkout] Loaded checkout_data from localStorage:", checkoutData);
 
   const getTotals = () => {
     const subtotal =
@@ -36,8 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const loadCart = async (user) => {
     if (!user) return [];
     try {
+      console.log("[checkout] Loading cart for user:", user.uid);
       const items = await DBService.getUserCart(user.uid);
       cartItems = items || [];
+      console.log("[checkout] Cart items loaded:", cartItems.length);
       renderSummary();
     } catch (e) {
       console.error("Failed to load cart for checkout:", e);
@@ -46,8 +56,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   AuthService.observeAuth(async (user) => {
+    console.log("[checkout] observeAuth fired. User:", user?.uid);
     currentUser = user;
     if (!user) {
+      console.warn("[checkout] No user. Redirecting to login.");
       window.location.href = "login.html";
       return;
     }
@@ -65,22 +77,27 @@ document.addEventListener("DOMContentLoaded", () => {
     errorBox.textContent = "";
 
     if (!name) {
+      console.warn("[checkout] Validation failed: name missing");
       errorBox.textContent = "Please enter your full name.";
       return null;
     }
     if (!phone || !/^09\d{9}$/.test(phone)) {
+      console.warn("[checkout] Validation failed: phone invalid", phone);
       errorBox.textContent = "Enter a valid phone number (Example: 09123456789).";
       return null;
     }
     if (!address || address.length < 10) {
+      console.warn("[checkout] Validation failed: address too short");
       errorBox.textContent = "Please enter your complete address.";
       return null;
     }
     if (!payment) {
+      console.warn("[checkout] Validation failed: payment not selected");
       errorBox.textContent = "Please select a payment method.";
       return null;
     }
 
+    console.log("[checkout] Validation passed.");
     return { name, phone, address, payment };
   };
 
@@ -107,8 +124,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const placeOrder = async () => {
+    console.log("[checkout] placeOrder clicked. User:", currentUser?.uid, "cartItems:", cartItems.length);
     if (!currentUser) {
       errorBox.textContent = "Please log in to place an order.";
+      console.warn("[checkout] Blocked placeOrder: no user");
       window.location.href = "login.html";
       return;
     }
@@ -118,10 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!cartItems.length) {
       errorBox.textContent = "Your cart is empty.";
+      console.warn("[checkout] Blocked placeOrder: cart is empty.");
       return;
     }
 
     const { subtotal, discount, total, coupon } = getTotals();
+    console.log("[checkout] Proceeding to create order with totals:", { subtotal, discount, total, coupon });
 
     placeOrderBtn.disabled = true;
     try {
@@ -143,6 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       await clearCart();
+      console.log("[checkout] Order created and cart cleared.");
       showSuccessModal({
         ...formValues,
         total
