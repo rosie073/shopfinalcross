@@ -149,6 +149,17 @@ body {
   box-shadow: 0 0 0 3px rgba(139, 61, 255, 0.18);
 }
 
+.input-error {
+  border-color: #e63946 !important;
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2) !important;
+}
+
+.field-error {
+  color: #e63946;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+
 /* Checkbox row */
 
 .auth-extra-row {
@@ -190,6 +201,14 @@ body {
 .auth-button:active {
   transform: translateY(0);
   box-shadow: 0 12px 24px rgba(69, 17, 187, 0.4);
+}
+
+.auth-button.is-disabled,
+.auth-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 /* Footer link beneath button */

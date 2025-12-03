@@ -62,6 +62,8 @@ a:hover {
   backdrop-filter: blur(4px);
   position: sticky;
   top: 0;
+  z-index: 20;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
 }
 
 .logo {
@@ -85,6 +87,47 @@ nav a {
 nav a.active,
 nav a:hover {
   color: #0bb79d;
+}
+
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.nav-toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #1f2937;
+  border-radius: 2px;
+}
+
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 19;
+}
+
+.nav-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav-open {
+  overflow: hidden;
 }
 
 .product-card a {
@@ -983,6 +1026,12 @@ nav a:hover {
   box-shadow: 0 0 0 2px rgba(217, 83, 79, 0.25);
 }
 
+.field-error {
+  color: #d9534f;
+  font-size: 13px;
+  margin: 6px 0 0;
+}
+
 .checkout-info textarea {
   resize: none;
   height: 100px;
@@ -1692,6 +1741,58 @@ nav a:hover {
 .order-modal .btn-outline {
   border-color: #d1d5db;
   color: #111827;
+}
+
+.nav-docked {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 920px) {
+  .navbar {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 5%;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .navbar nav {
+    width: 100%;
+  }
+
+  .navbar nav ul {
+    position: fixed;
+    top: 76px;
+    right: 16px;
+    left: 16px;
+    flex-direction: column;
+    background: #ffffff;
+    padding: 14px;
+    border-radius: 16px;
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.12);
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    z-index: 25;
+  }
+
+  .navbar nav.is-open ul {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  nav ul li {
+    width: 100%;
+  }
+
+  nav ul li a {
+    display: block;
+    padding: 10px 12px;
+  }
 }
 
 

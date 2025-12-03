@@ -1,6 +1,7 @@
 import { ProductModel } from "./models/productModels.js";
 import { ProductView } from "./views/productViews.js";
 import { AuthService } from "./services/auth.js";
+import UIController from "./controllers/uiController.js";
 
 const AppController = (() => {
   const toggleAddToCartForAdmin = (isAdmin) => {
@@ -20,6 +21,7 @@ const AppController = (() => {
 
   const init = async () => {
     console.log("AppController initialized");
+    UIController.init();
 
     // Check auth state for navbar
     AuthService.observeAuth(async (user) => {
@@ -70,7 +72,7 @@ const AppController = (() => {
             adminLi.id = "adminLink";
             // Check if we are in root or html folder to adjust path
             const adminPath = isInHtmlFolder ? "admin.html" : "html/admin.html";
-            adminLi.innerHTML = `<a href="${adminPath}">Admin</a>`;
+            adminLi.innerHTML = `<a href="${adminPath}">Products</a>`;
             // Insert before the auth link or at the end
             navUl.insertBefore(adminLi, authLink);
 

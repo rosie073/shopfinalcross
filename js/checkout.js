@@ -1,11 +1,13 @@
 import { DBService } from "./services/db.js";
 import { AuthService } from "./services/auth.js";
+import { createFormValidator } from "./services/patterns.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const summaryBox = document.getElementById("summaryTotals");
   const errorBox = document.getElementById("errorMessage");
   const successModal = document.getElementById("orderSuccessModal");
   const placeOrderBtn = document.getElementById("placeOrderBtn");
+  const checkoutForm = document.getElementById("checkoutForm");
 
   console.log("[checkout] DOM ready. Button found:", !!placeOrderBtn);
   if (!placeOrderBtn) {
@@ -82,6 +84,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderSummary();
 
+  const formValidator = checkoutForm
+    ? createFormValidator(
+        checkoutForm,
+        {
+          buyerName: [
+            { type: "required", options: { message: "Name is required." } },
+            { type: "minLength", options: { min: 3, message: "Enter at least 3 characters." } }
+          ],
+          buyerPhone: [
+            { type: "required", options: { message: "Phone number is required." } },
+            { type: "phone" }
+          ],
+          buyerAddress: [
+            { type: "required", options: { message: "Address is required." } },
+            { type: "minLength", options: { min: 10, message: "Add a more detailed address." } }
+          ],
+          payment: [
+            () =>
+              document.querySelector("input[name='payment']:checked")
+                ? null
+                : "Select a payment method."
+          ]
+        },
+        {
+          onStateChange: (isValid) => {
+            if (placeOrderBtn) {
+              placeOrderBtn.disabled = !isValid;
+              placeOrderBtn.classList.toggle("is-disabled", !isValid);
+            }
+          }
+        }
+      )
+    : null;
+
+  checkoutForm?.addEventListener("submit", (e) => e.preventDefault());
+
   const validateForm = () => {
     const nameInput = document.getElementById("buyerName");
     const phoneInput = document.getElementById("buyerPhone");
@@ -92,47 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const address = addressInput?.value.trim() || "";
     const payment = paymentInput?.value;
 
-    const clearErrors = () => {
-      [nameInput, phoneInput, addressInput].forEach((el) => el?.classList.remove("input-error"));
-    };
-
-    const flagError = (el) => {
-      if (el) {
-        el.classList.add("input-error");
-        el.focus();
-      }
-    };
+    const isValid = formValidator ? formValidator.validateAll() : true;
+    if (!isValid) {
+      errorBox.textContent = "Please fix the highlighted fields.";
+      showAlert("Please fix the highlighted fields before placing the order.");
+      return null;
+    }
 
     errorBox.textContent = "";
-    clearErrors();
-
-    if (!name) {
-      console.warn("[checkout] Validation failed: name missing");
-      errorBox.textContent = "Please enter your full name.";
-      showAlert("Full name required");
-      flagError(nameInput);
-      return null;
-    }
-    if (!phone || !/^09\d{9}$/.test(phone)) {
-      console.warn("[checkout] Validation failed: phone invalid", phone);
-      errorBox.textContent = "Enter a valid phone number (Example: 09123456789).";
-      showAlert("Invalid phone number", "Use format 09123456789");
-      flagError(phoneInput);
-      return null;
-    }
-    if (!address || address.length < 10) {
-      console.warn("[checkout] Validation failed: address too short");
-      errorBox.textContent = "Please enter your complete address.";
-      showAlert("Address too short", "Please enter your complete address.");
-      flagError(addressInput);
-      return null;
-    }
-    if (!payment) {
-      console.warn("[checkout] Validation failed: payment not selected");
-      errorBox.textContent = "Please select a payment method.";
-      showAlert("Select a payment method");
-      return null;
-    }
 
     console.log("[checkout] Validation passed.");
     return { name, phone, address, payment };
