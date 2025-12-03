@@ -2,14 +2,17 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
-} from "firebase/auth";
-import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
+  onAuthStateChanged,
+  doc,
+  setDoc,
+  serverTimestamp,
+  getDoc
+} from "../firebase/firebase-deps.js";
 import { auth, db } from "../firebase/app.js";
 
 let adminFallbackLogged = false;
 
-export const AuthService = {
+export const AuthService = {  
   signUp: async (email, password) => {
     let userCredential;
     try {

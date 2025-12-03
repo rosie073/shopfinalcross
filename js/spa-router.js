@@ -1,30 +1,55 @@
-// Lightweight URL cleaner.
-// Removes .html segments from the visible URL and fixes internal links
-// so navigation still works while keeping paths tidy.
+// SPA-friendly router shim for Firebase Hosting rewrites.
+// Firebase rewrites all routes to /index.html. This script maps clean URLs
+// (e.g., /shop) to the actual static HTML files (e.g., /html/shop.html) so
+// direct links and reloads work without 404s.
 
-const originalPathname = window.location.pathname;
-
-const toCleanPath = (pathname) => {
-  if (pathname.endsWith("/")) return pathname;
-  if (pathname.endsWith("index.html")) return "/";
-
-  // /html/about.html -> /about
-  const htmlMatch = pathname.match(/\/html\/(.+)\.html$/);
-  if (htmlMatch) return `/${htmlMatch[1]}`;
-
-  // /login.html -> /login
-  if (pathname.endsWith(".html")) {
-    return pathname.replace(/\.html$/, "");
-  }
-
-  return pathname;
+const ROUTE_MAP = {
+  "": "index.html",
+  index: "index.html",
+  shop: "html/shop.html",
+  product: "html/product.html",
+  cart: "html/cart.html",
+  checkout: "html/checkout.html",
+  login: "html/login.html",
+  register: "html/register.html",
+  orders: "html/orders.html",
+  about: "html/about.html",
+  contact: "html/contact.html",
+  blog: "html/blog.html",
+  admin: "html/admin.html",
+  "admin-orders": "html/admin-orders.html"
 };
 
-const applyCleanUrl = () => {
-  const cleanPath = toCleanPath(originalPathname);
-  const newUrl = cleanPath + window.location.search + window.location.hash;
-  if (newUrl !== window.location.pathname + window.location.search + window.location.hash) {
-    window.history.replaceState({}, "", newUrl);
+const getPathSegment = () => {
+  const trimmed = window.location.pathname.replace(/^\/+|\/+$/g, "");
+  // Support nested paths like /product/123 by taking the first segment
+  const [first] = trimmed.split("/");
+  return first || "";
+};
+
+const resolveInitialRoute = () => {
+  const currentPath = window.location.pathname;
+  const trimmed = currentPath.replace(/^\/+|\/+$/g, "");
+  const searchHash = window.location.search + window.location.hash;
+
+  // If the path already points to an HTML file but not under /html/, remap to the correct file in /html/
+  if (trimmed.endsWith(".html")) {
+    const filename = trimmed.split("/").pop() || "";
+    const name = filename.replace(/\.html$/i, "");
+    const target = ROUTE_MAP[name];
+    if (target && !currentPath.endsWith(target)) {
+      window.location.replace(`/${target}${searchHash}`);
+    }
+    return;
+  }
+
+  const segment = getPathSegment();
+  const target = ROUTE_MAP[segment];
+  if (!target) return;
+
+  // Avoid loops: only redirect if we're not already at the target file
+  if (!currentPath.endsWith(target)) {
+    window.location.replace(`/${target}${searchHash}`);
   }
 };
 
@@ -34,19 +59,26 @@ const normalizeInternalLinks = () => {
     const href = anchor.getAttribute("href");
     if (!href || href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("#")) return;
 
-    // Resolve relative hrefs using the ORIGINAL path (with /html/...)
-    const resolved = new URL(href, window.location.origin + originalPathname);
-    // Only touch links that point to our site
-    if (resolved.origin !== window.location.origin) return;
+    // Resolve relative links and map to clean paths (e.g., /shop instead of /html/shop.html)
+    const resolved = new URL(href, window.location.origin + window.location.pathname);
+    const normalizedPath = resolved.pathname.replace(/^\/+|\/+$/g, "");
+    const [segment] = normalizedPath.split("/");
+    const target = ROUTE_MAP[segment];
+    if (target) {
+      anchor.setAttribute("href", `/${segment}${resolved.search}${resolved.hash}`);
+      return;
+    }
 
-    anchor.setAttribute("href", resolved.pathname + resolved.search + resolved.hash);
+    // Fallback: if authoring used html/xyz.html, make it absolute from root
+    if (/^(\.\/)?html\//i.test(href) || href.endsWith(".html")) {
+      const cleaned = href.replace(/^\.\//, "").replace(/^\/+/, "");
+      anchor.setAttribute("href", `/${cleaned}`);
+    }
   });
 };
 
-// Clean the current URL immediately
-applyCleanUrl();
+resolveInitialRoute();
 
-// Fix links after DOM is ready
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", normalizeInternalLinks);
 } else {

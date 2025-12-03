@@ -104,8 +104,20 @@
       </div>
     </div>
 
+    <!-- Map bare firebase/* imports to CDN modules -->
+    <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js",
+        "firebase/storage": "https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js"
+      }
+    }
+    </script>
+
     <script type="module" src="../js/cart.js"></script>
-    <script type="module" src="../js/spa-router.js"></script>
+    <!-- <script type="module" src="../js/spa-router.js"></script> -->
     <script type="module" src="/js/login.js"></script>
   </body>
 </html>

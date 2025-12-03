@@ -12,9 +12,11 @@ import {
   query,
   where,
   orderBy,
-  collectionGroup
-} from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+  collectionGroup,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "../firebase/firebase-deps.js";
 import { db, storage } from "../firebase/app.js";
 
 const PRODUCTS_COLLECTION = "products";

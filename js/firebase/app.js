@@ -1,7 +1,4 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { initializeApp, getAuth, getFirestore, getStorage } from "./firebase-deps.js";
 import { firebaseConfig } from "./config.js";
 
 const app = initializeApp(firebaseConfig);
