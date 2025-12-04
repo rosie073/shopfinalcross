@@ -236,6 +236,11 @@ body {
   font-size: 0.85rem;
   margin-top: 8px;
 }
+.form-info {
+  color: #0f7b40;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
 
 
 /* Responsive */
