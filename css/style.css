@@ -1796,6 +1796,84 @@ nav a:hover {
 }
 
 
+/* Toast notifications */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #088178;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 15px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  z-index: 2000;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast.error {
+  background: #e74c3c;
+}
+
+/* Confirm modal */
+.confirm-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: grid;
+  place-items: center;
+  z-index: 1500;
+}
+.confirm-box {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.confirm-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.btn.danger {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+/* Button click feedback */
+.btn, .btn-outline {
+  transition: transform 0.1s ease, background-color 0.2s ease;
+}
+.btn:active, .btn-outline:active {
+  transform: scale(0.96);
+}
+
+/* Loading state */
+.loading {
+  position: relative;
+  opacity: 0.7;
+  pointer-events: none;
+}
+.loading::after {
+  content: "⏳";
+  position: absolute;
+  right: 10px;
+}
+
+
+
+
+
+
+
+
 /* Responsive */
 
 @media (max-width: 900px) {
